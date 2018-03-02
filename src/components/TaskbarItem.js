@@ -12,7 +12,8 @@ class TaskbarItem extends Component {
 
    render() {
       return (
-         <div onClick={this.handleItemClick} className="taskbar-item">
+         <div onClick={this.handleItemClick}
+          className={`taskbar-item ${this.props.inverted ? 'inverted' : ''}`}>
             <img src={`files/images/icons/${this.props.src}`} alt="Taskbar Icon"/>
          </div>
       );

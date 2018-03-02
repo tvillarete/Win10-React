@@ -3,6 +3,7 @@ html {
   cursor: default; }
 
 #taskbar {
+  z-index: 11;
   position: fixed;
   display: flex;
   bottom: 0;
@@ -16,6 +17,8 @@ html {
   justify-content: center;
   height: 100%;
   width: 3em; }
+  .taskbar-item.inverted img {
+    filter: invert(1); }
   .taskbar-item:hover {
     background: #323232; }
   .taskbar-item img {
@@ -35,21 +38,47 @@ html {
   position: absolute;
   height: 30em;
   width: 30em;
+  max-height: 100%;
+  max-width: 100%;
   background: lightgray;
   box-shadow: 0 0 50px black;
   animation: window-open 0.2s; }
   .app-window.minimized {
     display: none; }
+  .app-window.maximized {
+    width: auto;
+    height: auto;
+    top: 0;
+    bottom: 3em;
+    left: 0;
+    right: 0;
+    animation: maximizing 0.2s; }
+  .app-window .window-contents {
+    position: absolute;
+    top: 2em;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .app-window iframe {
+    height: 100%;
+    width: 100%;
+    border: none; }
 @keyframes window-open {
   0% {
     opacity: 0;
     transform: scale(0.95); } }
+@keyframes maximizing {
+  0% {
+    transform: scale(0.95) translateY(5%); } }
 .start-menu {
+  z-index: 10;
   position: fixed;
   bottom: 3em;
   left: 0;
   height: 25em;
-  width: 50em;
+  width: 100%;
+  max-width: 50em;
+  color: white;
   background: rgba(0, 0, 0, 0.8);
   animation: sm-appear 0.15s; }
 @keyframes sm-appear {

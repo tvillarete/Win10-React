@@ -26,6 +26,6 @@ yarn-error.log*
 # Sass Cache remove #
 # #####################
 *.sass-cache
-/.sass-cache
+/src/.sass-cache
 *.swp
 *.swo

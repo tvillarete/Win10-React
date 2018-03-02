@@ -1,29 +1,24 @@
 import React, { Component } from 'react';
-import Titlebar from './window/Titlebar';
+import Window from './Window';
 
 class WindowManager extends Component {
    constructor(props) {
       super(props);
       this.setupWindows = this.setupWindows.bind(this);
-      this.createWindow = this.createWindow.bind(this);
-      this.setupTitlebar = this.setupTitlebar.bind(this);
+      this.handleButtonClick = this.handleButtonClick.bind(this);
    }
 
-   setupTitlebar = content => {
-      if (!content.noWindowStyle) {
-         return (
-            <Titlebar title={content.name} />
-         );
-      }
-      return false;
+   handleButtonClick = button => {
+      this.props.callbackParent(button);
    }
 
    createWindow = content => {
       return (
          <div className={`${content.altClassName || 'app-window'}
-          ${content.isMinimized ? 'minimized' : ''}`}
+          ${content.isMinimized ? 'minimized' : ''}
+          ${content.isMaximized ? 'maximized' : ''}`}
           key={content.name}>
-          {this.setupTitlebar(content)}
+            {this.setupTitlebar(content)}
          </div>
       );
    }
@@ -35,7 +30,11 @@ class WindowManager extends Component {
       for (let app in apps) {
          let content = apps[app];
          if (content.isOpen) {
-            appWindows.push(this.createWindow(content));
+            appWindows.push(
+               <Window key={content.name}
+                content={content}
+                onButtonClick={this.handleButtonClick}/>
+            );
          }
       }
       return appWindows;
