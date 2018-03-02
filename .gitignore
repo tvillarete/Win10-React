@@ -19,3 +19,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# sass
+*.scssc
+
+# Sass Cache remove #
+# #####################
+*.sass-cache
+/.sass-cache
+*.swp
+*.swo
