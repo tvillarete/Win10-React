@@ -12,17 +12,6 @@ class WindowManager extends Component {
       this.props.callbackParent(button);
    }
 
-   createWindow = content => {
-      return (
-         <div className={`${content.altClassName || 'app-window'}
-          ${content.isMinimized ? 'minimized' : ''}
-          ${content.isMaximized ? 'maximized' : ''}`}
-          key={content.name}>
-            {this.setupTitlebar(content)}
-         </div>
-      );
-   }
-
    setupWindows() {
       var appWindows = [];
       const apps = this.props.appStates;
