@@ -25,7 +25,7 @@ class StartMenuApp extends Component {
    }
 
    handleClick(options) {
-      this.props.onButtonClick(options);
+      this.props.onEvent(options);
    }
 
    getSections() {

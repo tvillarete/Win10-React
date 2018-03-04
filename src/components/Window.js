@@ -63,6 +63,7 @@ class Window extends Component {
       if (!content.noWindowStyle) {
          return (
             <Titlebar
+             osType={this.props.osType}
              content={content}
              onButtonClick={this.handleButtonClick}/>
          );
@@ -100,6 +101,7 @@ class Window extends Component {
           defaultPosition={defaultPosition}>
             <div className={`
                ${content.altClassName || 'app-window'}
+               ${this.props.osType}
                ${content.isMinimized ? ' minimized' : ''}
                ${content.isMaximized ? ' maximized' : ''}
                ${content.isClosing ? 'app-closing' : ''}

@@ -1,6 +1,5 @@
 html {
-  font-family: helvetica, sans-serif;
-  cursor: url(~/files/images/icons/cursor.png), auto; }
+  font-family: helvetica, sans-serif; }
 
 .text-input {
   width: 100%;
@@ -18,36 +17,66 @@ html {
   display: flex;
   bottom: 0;
   left: 0;
-  right: 0;
+  right: 0; }
+
+#taskbar.windows-10 {
   height: 3em;
   background: black; }
+  #taskbar.windows-10 .taskbar-item {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 3em;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    box-sizing: border-box;
+    transition: all 0.15s ease-in-out; }
+    #taskbar.windows-10 .taskbar-item.active {
+      border-bottom: 2px solid white;
+      background: rgba(50, 50, 50, 0.8);
+      box-sizing: border-box; }
+      #taskbar.windows-10 .taskbar-item.active.focused {
+        background: rgba(100, 100, 100, 0.8); }
+    #taskbar.windows-10 .taskbar-item.minimized {
+      border-bottom: 2px solid white;
+      box-sizing: border-box; }
+    #taskbar.windows-10 .taskbar-item.inverted img {
+      filter: invert(1); }
+    #taskbar.windows-10 .taskbar-item:hover {
+      background: #323232; }
+    #taskbar.windows-10 .taskbar-item img {
+      max-height: 50%;
+      max-width: auto;
+      margin: auto 0; }
 
-.taskbar-item {
+#taskbar.mac-os {
+  height: 5em;
+  left: 2em;
+  right: 2em;
   display: flex;
   justify-content: center;
-  height: 100%;
-  width: 3em;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  box-sizing: border-box;
-  transition: all 0.15s ease-in-out; }
-  .taskbar-item.active {
-    border-bottom: 2px solid white;
-    background: rgba(50, 50, 50, 0.8);
-    box-sizing: border-box; }
-    .taskbar-item.active.focused {
-      background: rgba(100, 100, 100, 0.8); }
-  .taskbar-item.minimized {
-    border-bottom: 2px solid white;
-    box-sizing: border-box; }
-  .taskbar-item.inverted img {
-    filter: invert(1); }
-  .taskbar-item:hover {
-    background: #323232; }
-  .taskbar-item img {
-    max-height: 50%;
-    max-width: auto;
-    margin: auto 0; }
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: rgba(155, 155, 155, 0.72);
+  box-shadow: 0 0 10px black; }
+  #taskbar.mac-os .taskbar-item {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 5em;
+    transition: all 0.15s ease-in-out; }
+    #taskbar.mac-os .taskbar-item.active {
+      border-bottom: 2px solid white;
+      box-sizing: border-box; }
+    #taskbar.mac-os .taskbar-item.minimized {
+      border-bottom: 2px solid white;
+      box-sizing: border-box; }
+    #taskbar.mac-os .taskbar-item.inverted img {
+      filter: invert(1); }
+    #taskbar.mac-os .taskbar-item img {
+      max-height: 75%;
+      max-width: auto;
+      margin: auto 0; }
 
 #desktop {
   position: fixed;
@@ -55,9 +84,13 @@ html {
   bottom: 0;
   left: 0;
   right: 0;
-  background-position: center center;
-  background-size: cover;
   transition: background 1s ease-in-out; }
+
+#desktop.windows-10 {
+  cursor: url(~/files/images/icons/windows_10_cursor.png), auto; }
+
+#desktop.mac-os {
+  cursor: url(~/files/images/icons/mac_os_cursor.png), auto; }
 
 .app-window {
   position: absolute;
@@ -66,16 +99,24 @@ html {
   max-height: 100%;
   max-width: 100%;
   background: lightgray;
+  box-sizing: border-box; }
+  .app-window iframe {
+    height: 100%;
+    width: 100%;
+    border: none; }
+
+.app-window.windows-10 {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border: 1px solid dodgerblue;
   animation: window-open 0.2s;
   transition: all 0.2s ease-in-out; }
-  .app-window.focused {
+  .app-window.windows-10.focused {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
-    .app-window.focused .content-cover {
+    .app-window.windows-10.focused .content-cover {
       display: none; }
-  .app-window.app-dragging {
+  .app-window.windows-10.app-dragging {
     transition: none; }
-  .app-window.maximized {
+  .app-window.windows-10.maximized {
     width: auto;
     height: auto;
     top: 0;
@@ -84,28 +125,24 @@ html {
     left: 0;
     right: 0;
     animation: maximizing 0.2s; }
-  .app-window.app-closing {
+  .app-window.windows-10.app-closing {
     animation: closing 0.2s; }
-  .app-window.minimized {
+  .app-window.windows-10.minimized {
     opacity: 0;
     transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
-  .app-window .window-contents {
+  .app-window.windows-10 .window-contents {
     position: absolute;
     top: 2em;
     bottom: 0;
     left: 0;
     right: 0; }
-  .app-window .content-cover {
+  .app-window.windows-10 .content-cover {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: transparent; }
-  .app-window iframe {
-    height: 100%;
-    width: 100%;
-    border: none; }
 @keyframes window-open {
   0% {
     opacity: 0;
@@ -117,35 +154,89 @@ html {
   100% {
     transform: scale(0.95);
     opacity: 0; } }
+.app-window.mac-os {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }
+  .app-window.mac-os.focused {
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
+    .app-window.mac-os.focused .content-cover {
+      display: none; }
+  .app-window.mac-os.app-dragging {
+    transition: none; }
+  .app-window.mac-os.maximized {
+    width: auto;
+    height: auto;
+    top: 0;
+    bottom: 3em;
+    transform: translate(0, 0) !important;
+    left: 0;
+    right: 0; }
+  .app-window.mac-os.minimized {
+    opacity: 0;
+    transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
+  .app-window.mac-os .window-contents {
+    position: absolute;
+    top: 2em;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .app-window.mac-os .content-cover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent; }
+  .app-window.mac-os iframe {
+    height: 100%;
+    width: 100%;
+    border: none; }
+
 .shortcut-container {
   position: absolute;
   top: 0;
   bottom: 3em;
   left: 0;
   right: 0; }
+  .shortcut-container .shortcut {
+    display: flex;
+    flex-direction: column;
+    width: 5em;
+    text-align: center;
+    color: white;
+    user-select: none; }
+    .shortcut-container .shortcut:hover {
+      background: rgba(100, 100, 100, 0.5); }
+    .shortcut-container .shortcut img {
+      max-height: 4em;
+      margin: a uto; }
+    .shortcut-container .shortcut .shortcut-text {
+      margin: auto 0; }
 
 .titlebar {
-  height: 2em;
   display: flex;
   justify-content: space-between;
   background: white;
   user-select: none; }
   .titlebar .titlebar-container {
     display: flex; }
-  .titlebar .back-button {
+  .titlebar .title {
+    margin: auto 0; }
+
+.titlebar.windows-10 {
+  height: 2em; }
+  .titlebar.windows-10 .back-button {
     display: flex;
     background: dodgerblue; }
-    .titlebar .back-button:hover {
+    .titlebar.windows-10 .back-button:hover {
       filter: brightness(110%); }
-    .titlebar .back-button img {
+    .titlebar.windows-10 .back-button img {
       max-height: 1em;
       width: 3em;
       margin: auto;
       filter: invert(1); }
-  .titlebar .title {
-    margin: auto 0;
+  .titlebar.windows-10 .title {
     padding-left: 0.5em; }
-  .titlebar .titlebar-nav-button {
+  .titlebar.windows-10 .titlebar-nav-button {
     height: 100%;
     margin: auto 0;
     line-height: 0.8em;
@@ -154,10 +245,31 @@ html {
     width: 1.6em;
     text-align: center;
     transition: all 0.15s ease-out; }
-    .titlebar .titlebar-nav-button.red:hover {
+    .titlebar.windows-10 .titlebar-nav-button.red:hover {
       background: red;
       color: white; }
-    .titlebar .titlebar-nav-button:hover {
+    .titlebar.windows-10 .titlebar-nav-button:hover {
+      background: rgba(0, 0, 0, 0.05); }
+
+.titlebar.mac-os {
+  height: 2.5em;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ebebeb, color-stop(1, #d5d5d5)));
+  background: -webkit-linear-gradient(to top, #ebebeb, #d5d5d5);
+  background: -moz-linear-gradient(to top, #ebebeb, #d5d5d5);
+  background: -ms-linear-gradient(to top, #ebebeb, #d5d5d5);
+  background: -o-linear-gradient(to top, #ebebeb, #d5d5d5);
+  background: linear-gradient(top, #ebebeb, #d5d5d5);
+  border-bottom: 1px solid darkgray; }
+  .titlebar.mac-os .titlebar-nav-button {
+    height: 100%;
+    margin: auto 0;
+    line-height: 0.8em;
+    font-size: 2em;
+    font-weight: 400;
+    width: 1.6em;
+    text-align: center;
+    transition: all 0.15s ease-out; }
+    .titlebar.mac-os .titlebar-nav-button:hover {
       background: rgba(0, 0, 0, 0.05); }
 
 .start-menu {

@@ -27,6 +27,7 @@ class WindowManager extends Component {
          if (content.isOpen) {
             appWindows.push(
                <Window key={content.name}
+                osType={this.props.osType}
                 content={content}
                 zIndex={this.getWindowIndex(app)}
                 isFocused={this.isFocused(app)}

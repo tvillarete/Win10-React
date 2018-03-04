@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import Taskbar from './Taskbar';
 import WindowManager from './WindowManager';
 import ShortcutManager from './ShortcutManager';
-import SpotiFreeApp from './apps/SpotiFreeApp/SpotiFreeApp';
-import SettingsApp from './apps/SettingsApp/SettingsApp';
-import StartMenuApp from './apps/StartMenuApp/StartMenuApp';
-import CortanaApp from './apps/CortanaApp/CortanaApp';
 
 class Desktop extends Component {
    constructor(props) {
       super(props);
+      console.log(`Loaded ${props.system}`);
+      console.log(props);
       this.handleEvent = this.handleEvent.bind(this);
       this.setApplicationState = this.setApplicationState.bind(this);
       this.setDesktopState = this.setDesktopState.bind(this);
@@ -20,47 +18,9 @@ class Desktop extends Component {
       this.isFocused = this.isFocused.bind(this);
       this.handleWindowFocus = this.handleWindowFocus.bind(this);
       this.state = {
-         /* Default application states. */
-         apps: {
-            'Start Menu': {
-               name: 'Start Menu',
-               id: 'startmenu-app',
-               isInTaskbar: true,
-               noMinimize: true,
-               noWindowStyle: true,
-               altClassName: 'start-menu',
-               img: 'windows.png',
-               viewStack: [],
-               html: <StartMenuApp onEvent={this.handleEvent}/>
-            }, Cortana: {
-               name: 'Cortana',
-               id: 'cortana-app',
-               isInTaskbar: true,
-               noMinimize: true,
-               noWindowStyle: true,
-               altClassName: 'cortana',
-               img: 'cortana.png',
-               viewStack: [],
-               html: <CortanaApp onEvent={this.handleEvent}/>
-            }, SpotiFree: {
-               name: 'SpotiFree',
-               id: 'spotifree-app',
-               isInTaskbar: true,
-               img: 'spotifree.svg',
-               viewStack: [],
-               html: <SpotiFreeApp onEvent={this.handleEvent}/>
-            }, Settings: {
-               name: 'Settings',
-               id: 'settings-app',
-               isInTaskbar: true,
-               img: 'settings.svg',
-               invertIconColor: true,
-               viewStack: [],
-               html: <SettingsApp onEvent={this.handleEvent}/>
-            },
-         },
+         apps: props.apps,
          desktop: {
-            background: 'files/images/bg1.jpg',
+            background: props.defaultBackground,
          },
          activeApps: [],
          appsToClose: [],
@@ -81,6 +41,11 @@ class Desktop extends Component {
    setApplicationState(options) {
       let app = options.name;
       this.setState((state, props) => {
+         if (!state.apps[app]) {
+            console.log("Error: "+app+" doesn't exist on this system.");
+            return state;
+         }
+
          var isOpen = state.apps[app].isOpen;
          var isMinimized = state.apps[app].isMinimized;
          var isMaximized = state.apps[app].isMaximized;
@@ -130,21 +95,23 @@ class Desktop extends Component {
          }
          /** Close Cortana and Start Menu if any other app is opened
           */
-         if (app !== 'Start Menu' && app !== 'Cortana') {
-            if (state.apps['Start Menu'].isOpen) {
-               state.apps['Start Menu'].isClosing = true;
-               state.appsToClose.push('Start Menu');
-            } else if (state.apps.Cortana.isOpen) {
-               state.apps['Cortana'].isClosing = true;
-               state.appsToClose.push('Cortana');
-            }
-         } else if (app === 'Start Menu' || app === 'Cortana') {
-            if (app === 'Start Menu' && state.apps.Cortana.isOpen) {
-               state.apps['Cortana'].isClosing = true;
-               state.appsToClose.push('Cortana');
-            } else if (app === 'Cortana' && state.apps['Start Menu'].isOpen) {
-               state.apps['Start Menu'].isClosing = true;
-               state.appsToClose.push('Start Menu');
+         if (this.props.osType === 'windows-10') {
+            if (app !== 'Start Menu' && app !== 'Cortana') {
+               if (state.apps['Start Menu'].isOpen) {
+                  state.apps['Start Menu'].isClosing = true;
+                  state.appsToClose.push('Start Menu');
+               } else if (state.apps.Cortana.isOpen) {
+                  state.apps['Cortana'].isClosing = true;
+                  state.appsToClose.push('Cortana');
+               }
+            } else if (app === 'Start Menu' || app === 'Cortana') {
+               if (app === 'Start Menu' && state.apps.Cortana.isOpen) {
+                  state.apps['Cortana'].isClosing = true;
+                  state.appsToClose.push('Cortana');
+               } else if (app === 'Cortana' && state.apps['Start Menu'].isOpen) {
+                  state.apps['Start Menu'].isClosing = true;
+                  state.appsToClose.push('Start Menu');
+               }
             }
          }
          return state;
@@ -154,17 +121,24 @@ class Desktop extends Component {
    setDesktopState(options) {
       switch(options.setting) {
          case 'background':
-         default:
             this.setState((state) => {
                localStorage.desktopBackground = options.value;
                state.desktop.background = options.value;
                return state;
             });
             break;
+         case 'change-os':
+            console.log("Switching to "+options.value);
+            this.props.onEvent(options);
+            break;
+         default:
+            break;
       }
-      console.log(this.state);
    }
 
+   /** The following functions are used to manipulate the zIndex of each active
+    * window. isFocus() returns whether or not the current window is active.
+    */
    focusWindow(app) {
       let activeApps = this.state.activeApps;
       for (let i=activeApps.length-1; i>=0; i--) {
@@ -202,6 +176,7 @@ class Desktop extends Component {
       appsToClose.forEach(function(app, index) {
          state.apps[app].isOpen = false;
          state.apps[app].isClosing = false;
+         state.apps[app].isMaximized = false;
          state.apps[app].viewStack = [];
          shouldUpdateState = true;
       });
@@ -245,15 +220,18 @@ class Desktop extends Component {
 
    render() {
       return (
-         <div id="desktop" style={{background: `url(${this.state.desktop.background})`}}>
+         <div id="desktop" className={this.props.osType} style={{background: `url(${this.state.desktop.background})`}}>
             <WindowManager
+             osType={this.props.osType}
              callbackParent={this.handleEvent}
              onWindowFocus={this.handleWindowFocus}
              appStates={this.state.apps}
              activeApps={this.state.activeApps}/>
             <ShortcutManager
+             id={this.props.osType}
              onEvent={this.handleEvent}/>
             <Taskbar
+             osType={this.props.osType}
              apps={this.state.apps}
              activeApps={this.state.activeApps}
              callbackParent={this.setApplicationState}/>

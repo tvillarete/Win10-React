@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Desktop from './components/Desktop';
+import BootManager from './components/BootManager';
 import './main.css';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-         <Desktop />
+         <BootManager />
       </div>
     );
   }

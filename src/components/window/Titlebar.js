@@ -31,7 +31,8 @@ class Titlebar extends Component {
    render() {
       let name = this.props.content.name;
       return (
-         <div className="titlebar" onDoubleClick={()=>this.handleClick({type: 'maximize'})}>
+         <div className={`titlebar ${this.props.osType}`}
+          onDoubleClick={()=>this.handleClick({type: 'maximize'})}>
             <div className="titlebar-container">
                {this.getBackButton()}
                <p className="title">{name}</p>

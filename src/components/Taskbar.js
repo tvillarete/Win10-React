@@ -27,6 +27,7 @@ class Taskbar extends Component {
          if (appContent.isInTaskbar) {
             taskbarItems.push(
                <TaskbarItem
+                osType={this.props.osType}
                 inverted={appContent.invertIconColor}
                 key={appContent.name}
                 app={appContent.name}
@@ -44,7 +45,7 @@ class Taskbar extends Component {
 
    render() {
       return (
-         <div id="taskbar">
+         <div id="taskbar" className={this.props.osType}>
             {this.getTaskbarItems()}
          </div>
       );
