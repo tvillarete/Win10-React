@@ -6,10 +6,16 @@ class Taskbar extends Component {
       super(props);
       this.handleItemClick = this.handleItemClick.bind(this);
       this.getTaskbarItems = this.getTaskbarItems.bind(this);
+      this.isFocused = this.isFocused.bind(this);
    }
 
    handleItemClick(app) {
       this.props.callbackParent({name: app});
+   }
+
+   isFocused(app) {
+      const activeApps = this.props.activeApps;
+      return activeApps[0] === app;
    }
 
    getTaskbarItems() {
@@ -17,14 +23,18 @@ class Taskbar extends Component {
       let taskbarItems = [];
 
       for (let app in apps) {
-         app = apps[app];
-         if (app.isInTaskbar) {
+         let appContent = apps[app];
+         if (appContent.isInTaskbar) {
             taskbarItems.push(
                <TaskbarItem
-                inverted={app.invertIconColor}
-                key={app.name}
-                app={app.name}
-                src={app.img}
+                inverted={appContent.invertIconColor}
+                key={appContent.name}
+                app={appContent.name}
+                src={appContent.img}
+                hideStyles={appContent.noWindowStyle}
+                isActive={appContent.isOpen}
+                isFocused={this.isFocused(app)}
+                isMinimized={appContent.isMinimized}
                 callbackParent={this.handleItemClick}/>
             );
          }

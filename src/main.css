@@ -1,6 +1,6 @@
 html {
   font-family: helvetica, sans-serif;
-  cursor: default; }
+  cursor: url(~/files/images/icons/cursor.png), auto; }
 
 .text-input {
   width: 100%;
@@ -26,7 +26,20 @@ html {
   display: flex;
   justify-content: center;
   height: 100%;
-  width: 3em; }
+  width: 3em;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  box-sizing: border-box;
+  transition: all 0.15s ease-in-out; }
+  .taskbar-item.active {
+    border-bottom: 2px solid white;
+    background: rgba(50, 50, 50, 0.8);
+    box-sizing: border-box; }
+    .taskbar-item.active.focused {
+      background: rgba(100, 100, 100, 0.8); }
+  .taskbar-item.minimized {
+    border-bottom: 2px solid white;
+    box-sizing: border-box; }
   .taskbar-item.inverted img {
     filter: invert(1); }
   .taskbar-item:hover {
@@ -42,7 +55,9 @@ html {
   bottom: 0;
   left: 0;
   right: 0;
-  background: url("~/files/images/bg1.jpg"); }
+  background-position: center center;
+  background-size: cover;
+  transition: background 1s ease-in-out; }
 
 .app-window {
   position: absolute;
@@ -51,29 +66,42 @@ html {
   max-height: 100%;
   max-width: 100%;
   background: lightgray;
-  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   animation: window-open 0.2s;
-  transition: all 0.15s ease-in-out; }
-  .app-window.minimized {
-    opacity: 0;
-    transform: translateY(100%) translateX(-5%) scale(0.85); }
+  transition: all 0.2s ease-in-out; }
+  .app-window.focused {
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
+    .app-window.focused .content-cover {
+      display: none; }
+  .app-window.app-dragging {
+    transition: none; }
   .app-window.maximized {
     width: auto;
     height: auto;
     top: 0;
     bottom: 3em;
+    transform: translate(0, 0) !important;
     left: 0;
     right: 0;
     animation: maximizing 0.2s; }
   .app-window.app-closing {
-    transform: scale(0.95);
-    opacity: 0; }
+    animation: closing 0.2s; }
+  .app-window.minimized {
+    opacity: 0;
+    transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
   .app-window .window-contents {
     position: absolute;
     top: 2em;
     bottom: 0;
     left: 0;
     right: 0; }
+  .app-window .content-cover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent; }
   .app-window iframe {
     height: 100%;
     width: 100%;
@@ -85,11 +113,23 @@ html {
 @keyframes maximizing {
   0% {
     transform: scale(0.95) translateY(5%); } }
+@keyframes closing {
+  100% {
+    transform: scale(0.95);
+    opacity: 0; } }
+.shortcut-container {
+  position: absolute;
+  top: 0;
+  bottom: 3em;
+  left: 0;
+  right: 0; }
+
 .titlebar {
   height: 2em;
   display: flex;
   justify-content: space-between;
-  background: white; }
+  background: white;
+  user-select: none; }
   .titlebar .titlebar-container {
     display: flex; }
   .titlebar .back-button {
@@ -260,5 +300,13 @@ html {
       background: url(~/files/images/icons/settings-sheet.jpg) -91px -147px; }
     #settings-app .button-icon.update-settings {
       background: url(~/files/images/icons/settings-sheet.jpg) -170px -147px; }
+
+#spotifree-app {
+  display: flex;
+  flex-direction: column; }
+  #spotifree-app.app-dragging .content-cover {
+    display: block; }
+  #spotifree-app .main-screen {
+    height: 100%; }
 
 /*# sourceMappingURL=main.css.map */

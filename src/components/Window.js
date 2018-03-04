@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Titlebar from './window/Titlebar';
+import Draggable from 'react-draggable';
 
 class Window extends Component {
    constructor(props) {
@@ -9,7 +10,13 @@ class Window extends Component {
       this.handleButtonClick = this.handleButtonClick.bind(this);
       this.hideLoadingScreen = this.hideLoadingScreen.bind(this);
       this.getWindowHtml = this.getWindowHtml.bind(this);
-      this.state = {loadingScreenShown: true}
+      this.handleDrag = this.handleDrag.bind(this);
+      this.handleDragStop = this.handleDragStop.bind(this);
+      this.handleDragStart = this.handleDragStart.bind(this);
+      this.state = {
+         loadingScreenShown: true,
+         isDragging: false,
+      }
    }
 
    /* Used to propagate app button clicks to the overall "App State" manager
@@ -20,28 +27,28 @@ class Window extends Component {
       this.props.onButtonClick(button);
    }
 
-   /** Sets up the titlebar and HTML for the specific app being rendered.
-    *  Also checks whether or not to delay showing the app until after the
-    *  loading screen has been displayed (For a more realistic experience).
-    */
-   createWindow = () => {
-      var content = this.props.content;
-      if (content.hasLoadingScreen && this.state.loadingScreenShown) {
-         this.hideLoadingScreen();
-      }
-      return (
-         <div className={`${content.altClassName || 'app-window'}
-            ${content.isMinimized ? ' minimized' : ''}
-            ${content.isMaximized ? ' maximized' : ''}
-            ${content.isClosing ? 'app-closing' : ''}`}
-          id={content.id}
-          key={content.name}>
-            {this.setupTitlebar(content)}
-            <div className="window-contents">
-               {this.getWindowHtml(content)}
-            </div>
-         </div>
-      );
+   handleDragStart() {
+      this.props.onWindowFocus(this.props.content.name)
+   }
+
+   handleDrag() {
+      this.props.onWindowFocus(this.props.content.name);
+      this.props.onButtonClick({
+         name: this.props.content.name,
+         action: 'maximize',
+         value: false
+      })
+      this.setState((state) => {
+         state.isDragging = true;
+         return state;
+      });
+   }
+
+   handleDragStop() {
+      this.setState((state) => {
+         state.isDragging = false;
+         return state;
+      });
    }
 
    hideLoadingScreen()  {
@@ -67,6 +74,48 @@ class Window extends Component {
       return React.cloneElement(
          content.html,
          {content: content},
+      );
+   }
+
+   /** Sets up the titlebar and HTML for the specific app being rendered.
+    *  Also checks whether or not to delay showing the app until after the
+    *  loading screen has been displayed (For a more realistic experience).
+    */
+   createWindow = () => {
+      var content = this.props.content;
+      const zIndex = this.props.zIndex - 1;
+      const defaultPosition = content.altClassName ? {x: 0, y: 0} :
+       {x: zIndex * 10, y: zIndex * 10};
+
+      if (content.hasLoadingScreen && this.state.loadingScreenShown) {
+         this.hideLoadingScreen();
+      }
+
+      return (
+         <Draggable
+          handle=".titlebar"
+          onStart={this.handleDragStart}
+          onDrag={this.handleDrag}
+          onStop={this.handleDragStop}
+          defaultPosition={defaultPosition}>
+            <div className={`
+               ${content.altClassName || 'app-window'}
+               ${content.isMinimized ? ' minimized' : ''}
+               ${content.isMaximized ? ' maximized' : ''}
+               ${content.isClosing ? 'app-closing' : ''}
+               ${this.props.isFocused ? 'focused' : ''}
+               ${this.state.isDragging ? 'app-dragging' : ''}
+             `}
+             id={content.id}
+             key={content.name}
+             style={{zIndex: zIndex + 1}}>
+               {this.setupTitlebar(content)}
+               <div className="window-contents" onClick={this.handleDragStart}>
+                  <div className="content-cover"></div>
+                  {this.getWindowHtml(content)}
+               </div>
+            </div>
+         </Draggable>
       );
    }
 
