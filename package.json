@@ -2,6 +2,7 @@
   "name": "react-win10",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://users.csc.calpoly.edu/~tvillare/BootManager/",
   "dependencies": {
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.6.2",

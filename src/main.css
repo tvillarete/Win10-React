@@ -254,11 +254,11 @@ html {
 .titlebar.mac-os {
   height: 2.5em;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ebebeb, color-stop(1, #d5d5d5)));
-  background: -webkit-linear-gradient(to top, #ebebeb, #d5d5d5);
-  background: -moz-linear-gradient(to top, #ebebeb, #d5d5d5);
-  background: -ms-linear-gradient(to top, #ebebeb, #d5d5d5);
-  background: -o-linear-gradient(to top, #ebebeb, #d5d5d5);
-  background: linear-gradient(top, #ebebeb, #d5d5d5);
+  background: -webkit-linear-gradient(to bottom, #ebebeb, #d5d5d5);
+  background: -moz-linear-gradient(to bottom, #ebebeb, #d5d5d5);
+  background: -ms-linear-gradient(to bottom, #ebebeb, #d5d5d5);
+  background: -o-linear-gradient(to bottom, #ebebeb, #d5d5d5);
+  background: linear-gradient(to bottom, #ebebeb, #d5d5d5);
   border-bottom: 1px solid darkgray; }
   .titlebar.mac-os .titlebar-nav-button {
     height: 100%;
@@ -271,6 +271,44 @@ html {
     transition: all 0.15s ease-out; }
     .titlebar.mac-os .titlebar-nav-button:hover {
       background: rgba(0, 0, 0, 0.05); }
+
+.boot-manager {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: url(~/files/images/boot.png) no-repeat center center fixed; }
+  .boot-manager h1 {
+    display: none;
+    font-weight: 400;
+    margin: 0em auto; }
+  .boot-manager .os-container {
+    display: flex;
+    margin: 0 auto; }
+  .boot-manager .os-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+    height: 9em;
+    width: 9em;
+    margin: 1em;
+    border-radius: 4px; }
+    .boot-manager .os-item.selected {
+      background: rgba(200, 200, 200, 0.9);
+      border: 1px solid darkgray; }
+      .boot-manager .os-item.selected h3 {
+        opacity: 1; }
+    .boot-manager .os-item img {
+      max-height: 7em; }
+    .boot-manager .os-item h3 {
+      text-align: center;
+      font-weight: 400;
+      opacity: 0;
+      margin-top: 0.5em; }
 
 .start-menu {
   z-index: 10;
