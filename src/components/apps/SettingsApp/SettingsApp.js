@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PersonalizationView from './PersonalizationView';
 
 class SettingsApp extends Component {
    constructor(props) {
@@ -60,12 +61,12 @@ class SettingsApp extends Component {
          }
       }
       this.getMainNavButtons = this.getMainNavButtons.bind(this);
-      this.handleClick = this.handleClick.bind(this);
+      this.handleEvent = this.handleEvent.bind(this);
       this.getCurrentView = this.getCurrentView.bind(this);
    }
 
-   handleClick(options) {
-      this.props.onButtonClick(options);
+   handleEvent(options) {
+      this.props.onEvent(options);
    }
 
    /* Returns an array of MainNavButton components for the main screen.
@@ -82,7 +83,7 @@ class SettingsApp extends Component {
              key={section}
              name={section}
              content={sectionContent}
-             parentCallback={this.handleClick}/>
+             onEvent={this.handleEvent}/>
          );
       }
       return buttons;
@@ -96,7 +97,8 @@ class SettingsApp extends Component {
       } else {
          switch(viewStack[0]) {
             case 'personalization-settings':
-               return <PersonalizationView />
+               return <PersonalizationView
+                       onSettingsChange={this.handleEvent}/>
             default:
                return false;
          }
@@ -115,20 +117,25 @@ class SettingsApp extends Component {
 class MainNavButton extends Component {
    constructor(props) {
       super(props);
-      this.handleClick = this.handleClick.bind(this);
+      this.handleEvent = this.handleEvent.bind(this);
+      this.handleSettingsChange = this.handleSettingsChange.bind(this);
    }
 
-   handleClick = () => {
-      this.props.parentCallback({
+   handleEvent = () => {
+      this.props.onEvent({
          name: 'Settings',
-         type: 'change-view',
+         action: 'change-view',
          view: this.props.content.id,
       });
    }
 
+   handleSettingsChange(options) {
+      this.props.onEvent(options);
+   }
+
    render() {
       return (
-         <div className="main-nav-button" onClick={this.handleClick}>
+         <div className="main-nav-button" onClick={this.handleEvent}>
             <div className={`button-icon ${this.props.content.id}`}></div>
             <h3 className="main-nav-button-title">{this.props.name}</h3>
             <h4 className="main-nav-button-details">{this.props.content.details}</h4>
@@ -140,7 +147,7 @@ class MainNavButton extends Component {
 class MainScreenView extends Component {
    render() {
       return (
-         <div className="main-screen">
+         <div className="view main-screen">
             <div className="search-container">
                <h1 className="header">Windows Settings</h1>
                <input className="text-input" type="text" placeholder="Find a setting"></input>
@@ -149,14 +156,6 @@ class MainScreenView extends Component {
                {this.props.navButtons}
             </div>
          </div>
-      );
-   }
-}
-
-class PersonalizationView extends Component {
-   render() {
-      return (
-         <h1>Personalization</h1>
       );
    }
 }

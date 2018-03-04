@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import Taskbar from './Taskbar';
 import WindowManager from './WindowManager';
-import SpotiFreeApp from './apps/SpotiFreeApp';
-import SettingsApp from './apps/SettingsApp';
-import StartMenuApp from './apps/StartMenuApp';
-import CortanaApp from './apps/CortanaApp';
+import ShortcutManager from './ShortcutManager';
+import SpotiFreeApp from './apps/SpotiFreeApp/SpotiFreeApp';
+import SettingsApp from './apps/SettingsApp/SettingsApp';
+import StartMenuApp from './apps/StartMenuApp/StartMenuApp';
+import CortanaApp from './apps/CortanaApp/CortanaApp';
 
 class Desktop extends Component {
    constructor(props) {
       super(props);
+      this.handleEvent = this.handleEvent.bind(this);
       this.setApplicationState = this.setApplicationState.bind(this);
+      this.setDesktopState = this.setDesktopState.bind(this);
       this.handleDesktopClick = this.handleDesktopClick.bind(this);
       this.closePendingApps = this.closePendingApps.bind(this);
+      this.focusWindow = this.focusWindow.bind(this);
+      this.blurWindow = this.blurWindow.bind(this);
+      this.isFocused = this.isFocused.bind(this);
+      this.handleWindowFocus = this.handleWindowFocus.bind(this);
       this.state = {
          /* Default application states. */
          apps: {
@@ -24,7 +31,7 @@ class Desktop extends Component {
                altClassName: 'start-menu',
                img: 'windows.png',
                viewStack: [],
-               html: <StartMenuApp onButtonClick={this.setApplicationState}/>
+               html: <StartMenuApp onEvent={this.handleEvent}/>
             }, Cortana: {
                name: 'Cortana',
                id: 'cortana-app',
@@ -34,14 +41,14 @@ class Desktop extends Component {
                altClassName: 'cortana',
                img: 'cortana.png',
                viewStack: [],
-               html: <CortanaApp onButtonClick={this.setApplicationState}/>
+               html: <CortanaApp onEvent={this.handleEvent}/>
             }, SpotiFree: {
                name: 'SpotiFree',
                id: 'spotifree-app',
                isInTaskbar: true,
                img: 'spotifree.svg',
                viewStack: [],
-               html: <SpotiFreeApp onButtonClick={this.setApplicationState}/>
+               html: <SpotiFreeApp onEvent={this.handleEvent}/>
             }, Settings: {
                name: 'Settings',
                id: 'settings-app',
@@ -49,10 +56,22 @@ class Desktop extends Component {
                img: 'settings.svg',
                invertIconColor: true,
                viewStack: [],
-               html: <SettingsApp onButtonClick={this.setApplicationState}/>
+               html: <SettingsApp onEvent={this.handleEvent}/>
             },
          },
+         desktop: {
+            background: 'files/images/bg1.jpg',
+         },
+         activeApps: [],
          appsToClose: [],
+      }
+   }
+
+   handleEvent(options) {
+      if (options.type === 'desktop') {
+         this.setDesktopState(options);
+      } else {
+         this.setApplicationState(options);
       }
    }
 
@@ -66,7 +85,10 @@ class Desktop extends Component {
          var isMinimized = state.apps[app].isMinimized;
          var isMaximized = state.apps[app].isMaximized;
 
-         switch(options.type) {
+         switch(options.action) {
+            case 'open':
+               state.apps[app].isOpen = true;
+               break;
             case 'close':
                state.apps[app].isClosing = true;
                state.appsToClose.push(app);
@@ -75,7 +97,11 @@ class Desktop extends Component {
                state.apps[app].isMinimized = true;
                break;
             case 'maximize':
-               state.apps[app].isMaximized = !isMaximized;
+               if (options.value !== undefined) {
+                  state.apps[app].isMaximized = options.value;
+               } else {
+                  state.apps[app].isMaximized = !isMaximized;
+               }
                break;
             case 'change-view':
                state.apps[app].viewStack.push(options.view);
@@ -92,7 +118,12 @@ class Desktop extends Component {
                      state.apps[app].isOpen = true;
                   }
                } else {
-                  state.apps[app].isMinimized = isOpen && !isMinimized;
+                  if (isMinimized || !isOpen || !this.isFocused(app)) {
+                     state.activeApps = this.focusWindow(app);
+                  } else {
+                     state.activeApps = this.blurWindow(app);
+                  }
+                  state.apps[app].isMinimized = isOpen && !isMinimized && !this.isFocused(app);
                   state.apps[app].isOpen = true;
                }
                break;
@@ -120,8 +151,45 @@ class Desktop extends Component {
       });
    }
 
-   handleDesktopClick() {
-      console.log("CLICKED");
+   setDesktopState(options) {
+      switch(options.setting) {
+         case 'background':
+         default:
+            this.setState((state) => {
+               localStorage.desktopBackground = options.value;
+               state.desktop.background = options.value;
+               return state;
+            });
+            break;
+      }
+      console.log(this.state);
+   }
+
+   focusWindow(app) {
+      let activeApps = this.state.activeApps;
+      for (let i=activeApps.length-1; i>=0; i--) {
+         if (activeApps[i] === app) {
+            activeApps.splice(i, 1);
+         }
+      }
+      activeApps.unshift(app);
+      return activeApps;
+   }
+
+   blurWindow(app) {
+      let activeApps = this.state.activeApps;
+      for (let i=activeApps.length-1; i>=0; i--) {
+         if (activeApps[i] === app) {
+            activeApps.splice(i, 1);
+         }
+      }
+      activeApps.push(app);
+      return activeApps;
+   }
+
+   isFocused(app) {
+      const activeApps = this.state.activeApps;
+      return activeApps[0] === app;
    }
 
    /** Apps that have been scheduled to close will be processed here.
@@ -143,10 +211,11 @@ class Desktop extends Component {
       }
    }
 
+
+   /** Any apps waiting to be closed will be removed from the DOM at this point.
+    * setTimeout is used to ensure that the closing animation plays.
+    */
    componentDidUpdate() {
-      /** Any apps waiting to be closed will be removed from DOM at this point.
-       * setTimeout is used to ensure that the closing animation plays.
-       */
       if (this.state.appsToClose.length) {
          setTimeout(() => {
             this.closePendingApps();
@@ -154,12 +223,40 @@ class Desktop extends Component {
       }
    }
 
+   handleDesktopClick() {
+      console.log("CLICKED");
+   }
+
+   handleWindowFocus(focusedWindow) {
+      this.setState((state, props) => {
+         state.activeApps = this.focusWindow(focusedWindow);
+         return state;
+      });
+   }
+
+   componentWillMount() {
+      if (localStorage.desktopBackground) {
+         this.setState((state) => {
+            state.desktop.background = localStorage.desktopBackground;
+            return state;
+         });
+      }
+   }
+
    render() {
       return (
-         <div id="desktop">
-            <WindowManager callbackParent={this.setApplicationState}
-             appStates={this.state.apps} />
-            <Taskbar apps={this.state.apps} callbackParent={this.setApplicationState}/>
+         <div id="desktop" style={{background: `url(${this.state.desktop.background})`}}>
+            <WindowManager
+             callbackParent={this.handleEvent}
+             onWindowFocus={this.handleWindowFocus}
+             appStates={this.state.apps}
+             activeApps={this.state.activeApps}/>
+            <ShortcutManager
+             onEvent={this.handleEvent}/>
+            <Taskbar
+             apps={this.state.apps}
+             activeApps={this.state.activeApps}
+             callbackParent={this.setApplicationState}/>
          </div>
       );
    }

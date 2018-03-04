@@ -11,7 +11,7 @@ class Titlebar extends Component {
       let content = this.props.content;
       this.props.onButtonClick({
          name: content.name,
-         type: options.type,
+         action: options.type,
       });
    }
 
