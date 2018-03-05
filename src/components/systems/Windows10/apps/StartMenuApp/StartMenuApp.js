@@ -46,8 +46,12 @@ class StartMenuApp extends Component {
    }
 
    render() {
+      console.log(this.props);
       return (
          <div className="sm-container">
+            <div className="sm-background"
+             style={{background: `url(${this.props.desktopBg}) no-repeat center center fixed`}}>
+            </div>
             <div className="sm-sidebar">
                Sidebar
             </div>
@@ -115,7 +119,8 @@ class StartMenuTile extends Component {
 
    render() {
       return (
-         <div className={`sm-tile${this.props.inverted ? ' inverted' : ''}`} onClick={this.handleClick}>
+         <div className={`sm-tile${this.props.inverted ? ' inverted' : ''}`}
+          onClick={this.handleClick}>
             <img alt={`${this.props.name} tile`} src={this.props.img}/>
             <p className="tile-title">{this.props.name}</p>
          </div>

@@ -74,7 +74,11 @@ class Window extends Component {
    getWindowHtml(content) {
       return React.cloneElement(
          content.html,
-         {content: content},
+         {
+            content: content,
+            onEvent: this.handleButtonClick,
+            desktopBg: this.props.desktopBg
+         },
       );
    }
 

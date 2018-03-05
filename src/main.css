@@ -1,5 +1,6 @@
 html {
-  font-family: helvetica, sans-serif; }
+  font-family: helvetica, sans-serif;
+  background: black; }
 
 .text-input {
   width: 100%;
@@ -17,7 +18,8 @@ html {
   display: flex;
   bottom: 0;
   left: 0;
-  right: 0; }
+  right: 0;
+  overflow: hidden; }
 
 #taskbar.windows-10 {
   height: 3em;
@@ -53,12 +55,22 @@ html {
   height: 5em;
   left: 2em;
   right: 2em;
+  max-width: 70em;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   background: rgba(155, 155, 155, 0.72);
-  box-shadow: 0 0 10px black; }
+  box-shadow: 0 0 10px black;
+  animation: dock-reveal 0.35s; }
+  #taskbar.mac-os .taskbar-bg {
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    filter: blur(10px);
+    transform: scale(1.4); }
   #taskbar.mac-os .taskbar-item {
     display: flex;
     justify-content: center;
@@ -77,7 +89,9 @@ html {
       max-height: 75%;
       max-width: auto;
       margin: auto 0; }
-
+@keyframes dock-reveal {
+  0% {
+    transform: translateY(100%); } }
 #desktop {
   position: fixed;
   top: 0;
@@ -87,11 +101,19 @@ html {
   transition: background 1s ease-in-out; }
 
 #desktop.windows-10 {
-  cursor: url(~/files/images/icons/windows_10_cursor.png), auto; }
-
+  cursor: url(~/files/images/icons/windows_10_cursor.png), auto;
+  animation: fade 1.5s; }
+@keyframes fade {
+  0% {
+    opacity: 0; } }
 #desktop.mac-os {
-  cursor: url(~/files/images/icons/mac_os_cursor.png), auto; }
-
+  transition: none;
+  cursor: url(~/files/images/icons/mac_os_cursor.png), auto;
+  animation: fadescale 1s; }
+@keyframes fadescale {
+  0% {
+    transform: scale(0.8);
+    opacity: 0; } }
 .app-window {
   position: absolute;
   height: 35em;
@@ -99,50 +121,55 @@ html {
   max-height: 100%;
   max-width: 100%;
   background: lightgray;
-  box-sizing: border-box; }
-  .app-window iframe {
-    height: 100%;
-    width: 100%;
-    border: none; }
-
-.app-window.windows-10 {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-  border: 1px solid dodgerblue;
-  animation: window-open 0.2s;
-  transition: all 0.2s ease-in-out; }
-  .app-window.windows-10.focused {
+  box-sizing: border-box;
+  overflow: hidden; }
+  .app-window.focused {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
-    .app-window.windows-10.focused .content-cover {
+    .app-window.focused .content-cover {
       display: none; }
-  .app-window.windows-10.app-dragging {
-    transition: none; }
-  .app-window.windows-10.maximized {
+  .app-window.app-dragging {
+    transition: none !important; }
+    .app-window.app-dragging .content-cover {
+      display: block; }
+  .app-window.minimized {
+    opacity: 0;
+    transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
+  .app-window.maximized {
     width: auto;
     height: auto;
     top: 0;
-    bottom: 3em;
-    transform: translate(0, 0) !important;
-    left: 0;
-    right: 0;
-    animation: maximizing 0.2s; }
-  .app-window.windows-10.app-closing {
-    animation: closing 0.2s; }
-  .app-window.windows-10.minimized {
-    opacity: 0;
-    transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
-  .app-window.windows-10 .window-contents {
-    position: absolute;
-    top: 2em;
     bottom: 0;
     left: 0;
-    right: 0; }
-  .app-window.windows-10 .content-cover {
+    right: 0;
+    transform: translate(0, 0) !important;
+    animation: maximizing 0.2s; }
+  .app-window .content-cover {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background: transparent; }
+  .app-window iframe {
+    height: 100%;
+    width: 100%;
+    border: none; }
+  .app-window .window-contents {
+    position: absolute;
+    top: 2em;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+
+.app-window.windows-10 {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border: 1px solid dodgerblue;
+  animation: window-open 0.2s;
+  transition: all 0.2s ease-in-out; }
+  .app-window.windows-10.app-closing {
+    animation: closing 0.2s; }
+  .app-window.windows-10.maximized {
+    bottom: 3em; }
 @keyframes window-open {
   0% {
     opacity: 0;
@@ -155,41 +182,15 @@ html {
     transform: scale(0.95);
     opacity: 0; } }
 .app-window.mac-os {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); }
-  .app-window.mac-os.focused {
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
-    .app-window.mac-os.focused .content-cover {
-      display: none; }
-  .app-window.mac-os.app-dragging {
-    transition: none; }
-  .app-window.mac-os.maximized {
-    width: auto;
-    height: auto;
-    top: 0;
-    bottom: 3em;
-    transform: translate(0, 0) !important;
-    left: 0;
-    right: 0; }
-  .app-window.mac-os.minimized {
-    opacity: 0;
-    transform: translateY(100%) translateX(-5%) scale(0.85) !important; }
-  .app-window.mac-os .window-contents {
-    position: absolute;
-    top: 2em;
-    bottom: 0;
-    left: 0;
-    right: 0; }
+  border: 1px solid lightgray;
+  box-sizing: border-box;
+  border-radius: 6px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  transition: all 0.25s ease-in-out; }
   .app-window.mac-os .content-cover {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: transparent; }
-  .app-window.mac-os iframe {
-    height: 100%;
-    width: 100%;
-    border: none; }
+    top: 0.5em; }
+  .app-window.mac-os.maximized {
+    bottom: 5em; }
 
 .shortcut-container {
   position: absolute;
@@ -281,7 +282,8 @@ html {
   bottom: 0;
   left: 0;
   right: 0;
-  background: url(~/files/images/boot.png) no-repeat center center fixed; }
+  background: url(~/files/images/boot.png) no-repeat center center fixed;
+  animation: fadein 0.5s; }
   .boot-manager h1 {
     display: none;
     font-weight: 400;
@@ -296,10 +298,11 @@ html {
     height: 9em;
     width: 9em;
     margin: 1em;
+    border: 2px solid transparent;
     border-radius: 4px; }
     .boot-manager .os-item.selected {
       background: rgba(200, 200, 200, 0.9);
-      border: 1px solid darkgray; }
+      border: 2px solid darkgray; }
       .boot-manager .os-item.selected h3 {
         opacity: 1; }
     .boot-manager .os-item img {
@@ -308,8 +311,11 @@ html {
       text-align: center;
       font-weight: 400;
       opacity: 0;
-      margin-top: 0.5em; }
-
+      margin-top: 0.5em;
+      color: #5a5a5a; }
+@keyframes fadein {
+  0% {
+    opacity: 0; } }
 .start-menu {
   z-index: 10;
   position: fixed;
@@ -320,11 +326,19 @@ html {
   max-width: 61em;
   color: white;
   background: rgba(0, 0, 0, 0.8);
-  animation: sm-appear 0.2s; }
+  animation: sm-appear 0.2s;
+  overflow: hidden; }
   .start-menu.app-closing {
     animation: drawer-closing 0.18s; }
   .start-menu .sm-container {
     display: flex; }
+  .start-menu .sm-background {
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    filter: blur(10px) brightness(0.3);
+    transform: scale(1.2); }
   .start-menu .sm-sidebar {
     display: flex;
     flex-direcion: column;

@@ -28,7 +28,7 @@ class Windows10 extends Component {
                altClassName: 'start-menu',
                img: 'windows.png',
                viewStack: [],
-               html: <StartMenuApp onEvent={this.handleEvent}/>
+               html: <StartMenuApp/>
             }, Cortana: {
                name: 'Cortana',
                id: 'cortana-app',
@@ -38,7 +38,7 @@ class Windows10 extends Component {
                altClassName: 'cortana',
                img: 'cortana.png',
                viewStack: [],
-               html: <CortanaApp onEvent={this.handleEvent}/>
+               html: <CortanaApp/>
             }, Settings: {
                name: 'Settings',
                id: 'settings-app',
@@ -46,21 +46,21 @@ class Windows10 extends Component {
                img: 'settings.svg',
                invertIconColor: true,
                viewStack: [],
-               html: <SettingsApp onEvent={this.handleEvent}/>
+               html: <SettingsApp/>
             }, SpotiFree: {
                name: 'SpotiFree',
                id: 'spotifree-app',
                isInTaskbar: true,
                img: 'spotifree.svg',
                viewStack: [],
-               html: <SpotiFreeApp onEvent={this.handleEvent}/>
+               html: <SpotiFreeApp/>
             }, Edge: {
                name: 'Edge',
                id: 'edge-app',
                isInTaskbar: true,
                img: 'edge.svg',
                viewStack: [],
-               html: <EdgeApp onEvent={this.handleEvent}/>
+               html: <EdgeApp/>
             },
          },
       });
@@ -69,7 +69,7 @@ class Windows10 extends Component {
    render() {
       return (
          <Desktop
-          system="Windows 10"
+          system="Windows10"
           osType="windows-10"
           onEvent={this.handleEvent}
           defaultBackground="files/images/windows.jpg"

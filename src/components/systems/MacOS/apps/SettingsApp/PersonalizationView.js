@@ -17,13 +17,18 @@ class PersonalizationView extends Component {
             <button onClick={() => {this.handleSettingsChange({
                type: 'desktop',
                setting: 'background',
-               value: 'files/images/bg1.jpg'
+               value: 'files/images/macos.jpg'
             })}}>Background 1</button>
             <button onClick={() => {this.handleSettingsChange({
                type: 'desktop',
                setting: 'background',
                value: 'files/images/bg2.jpg'
             })}}>Background 2</button>
+            <button onClick={() => {this.handleSettingsChange({
+               type: 'desktop',
+               setting: 'background',
+               value: 'files/images/bg3.jpg'
+            })}}>Background 3</button>
          </div>
       );
    }

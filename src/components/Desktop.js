@@ -6,8 +6,6 @@ import ShortcutManager from './ShortcutManager';
 class Desktop extends Component {
    constructor(props) {
       super(props);
-      console.log(`Loaded ${props.system}`);
-      console.log(props);
       this.handleEvent = this.handleEvent.bind(this);
       this.setApplicationState = this.setApplicationState.bind(this);
       this.setDesktopState = this.setDesktopState.bind(this);
@@ -128,7 +126,6 @@ class Desktop extends Component {
             });
             break;
          case 'change-os':
-            console.log("Switching to "+options.value);
             this.props.onEvent(options);
             break;
          default:
@@ -191,10 +188,12 @@ class Desktop extends Component {
     * setTimeout is used to ensure that the closing animation plays.
     */
    componentDidUpdate() {
+      const duration = this.props.osType === 'windows-10' ? 150 : 0;
+
       if (this.state.appsToClose.length) {
          setTimeout(() => {
             this.closePendingApps();
-         }, 150);
+         }, duration);
       }
    }
 
@@ -220,9 +219,11 @@ class Desktop extends Component {
 
    render() {
       return (
-         <div id="desktop" className={this.props.osType} style={{background: `url(${this.state.desktop.background})`}}>
+         <div id="desktop" className={this.props.osType}
+          style={{background: `url(${this.state.desktop.background}) no-repeat center center fixed`}}>
             <WindowManager
              osType={this.props.osType}
+             desktopBg={this.state.desktop.background}
              callbackParent={this.handleEvent}
              onWindowFocus={this.handleWindowFocus}
              appStates={this.state.apps}
@@ -234,6 +235,7 @@ class Desktop extends Component {
              osType={this.props.osType}
              apps={this.state.apps}
              activeApps={this.state.activeApps}
+             bg={this.state.desktop.background}
              callbackParent={this.setApplicationState}/>
          </div>
       );

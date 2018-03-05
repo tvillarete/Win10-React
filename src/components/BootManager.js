@@ -10,6 +10,7 @@ class BootManager extends Component {
    }
 
    handleOSChange(options) {
+      console.log(options);
       if (options === 'MacOS' || options === 'Windows10') {
          this.setState(state=> {
             state.activeOS = options;
@@ -17,11 +18,7 @@ class BootManager extends Component {
          })
       } else {
          this.setState((state) => {
-            if (state.activeOS === 'MacOS') {
-               state.activeOS = 'Windows10';
-            } else {
-               state.activeOS = 'MacOS';
-            }
+            state.activeOS = '';
             return state;
          });
       }
@@ -35,6 +32,7 @@ class BootManager extends Component {
             Windows10: <Windows10
                         onOSChange={this.handleOSChange}/>
          },
+         names: ['Windows10', 'MacOS'],
          activeOS: '',
       });
    }
@@ -42,7 +40,7 @@ class BootManager extends Component {
    getCurrentView() {
       if (!this.state.activeOS) {
          return <BootSelector
-          list={this.state.list}
+          names={this.state.names}
           onEvent={this.handleOSChange}/>
       } else {
          return this.state.list[this.state.activeOS];
@@ -75,34 +73,49 @@ class BootSelector extends Component {
    }
 
    handleKeydown(e) {
-      const {cursor, selected} = this.state;
+      const {cursor} = this.state;
+      const listSize = this.props.names.length;
+      let pos = cursor;
 
-      if (e.key === 39 && cursor < this.state.list.length-1) {
+      if (e.keyCode === 37 && pos > 0) {
+         pos--;
          this.setState(prevState => ({
-            cursor: prevState.cursor + 1
-         }))
-      } else if (e.key === 37 && cursor > 0) {
+            cursor: pos,
+            selected: this.props.names[pos],
+         }));
+      } else if (e.keyCode === 39 && pos < listSize-1) {
+         pos++;
          this.setState(prevState => ({
-            cursor: prevState.cursor - 1
-         }))
+            cursor: pos,
+            selected: this.props.names[pos],
+         }));
+      } else if (e.keyCode === 13) {
+         this.handleEvent(this.props.names[pos])
       }
-      console.log(cursor);
+   }
+
+   componentWillMount() {
+      document.addEventListener("keydown", this.handleKeydown);
+   }
+
+   componentWillUnmount() {
+      document.removeEventListener("keydown", this.handleKeydown);
    }
 
    render() {
       return (
-         <div className="boot-manager" onKeyPress={this.handleKeydown}>
+         <div className="boot-manager" onKeyDown={this.handleKeydown}>
             <h1>Select OS</h1>
             <div className="os-container">
                <BootItem
                 text="Windows10"
                 selected={this.state.selected === "Windows10"}
-                img="files/images/icons/windows_black.svg"
+                img="/files/images/icons/windows_black.svg"
                 onEvent={this.handleEvent}/>
                <BootItem
                 text="MacOS"
                 selected={this.state.selected === 'MacOS'}
-                img="files/images/icons/apple.svg"
+                img="/files/images/icons/apple.svg"
                 onEvent={this.handleEvent}/>
             </div>
          </div>
@@ -116,7 +129,7 @@ class BootItem extends Component {
          <div
           className={`os-item ${this.props.selected ? 'selected' : ''}`}
           onClick={()=>{this.props.onEvent(this.props.text)}}>
-            <img src={this.props.img} />
+            <img alt={this.props.text} src={this.props.img} />
             <h3>{this.props.text}</h3>
          </div>
       );
