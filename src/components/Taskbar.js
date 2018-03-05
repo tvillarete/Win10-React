@@ -45,8 +45,11 @@ class Taskbar extends Component {
    render() {
       return (
          <div id="taskbar" className={this.props.osType}>
-            <div className="taskbar-bg"
-             style={{background: `url(${this.props.bg}) no-repeat center center fixed`}}></div>
+            <div className="taskbar-bg-container">
+               <div className="taskbar-bg"
+                style={{background: `url(${this.props.bg}) no-repeat center center fixed`}}>
+               </div>
+            </div>
             {this.getTaskbarItems()}
          </div>
       );

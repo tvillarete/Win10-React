@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://users.csc.calpoly.edu/~tvillare/BootManager/",
   "dependencies": {
+    "npm": "^5.7.1",
     "react": "^16.2.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.2.0",

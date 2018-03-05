@@ -63,6 +63,8 @@ class Window extends Component {
       if (!content.noWindowStyle) {
          return (
             <Titlebar
+             theme={content.theme}
+             background={content.background}
              osType={this.props.osType}
              content={content}
              onButtonClick={this.handleButtonClick}/>
@@ -105,6 +107,7 @@ class Window extends Component {
           defaultPosition={defaultPosition}>
             <div className={`
                ${content.altClassName || 'app-window'}
+               ${content.theme || 'light'}
                ${this.props.osType}
                ${content.isMinimized ? ' minimized' : ''}
                ${content.isMaximized ? ' maximized' : ''}
@@ -114,7 +117,10 @@ class Window extends Component {
              `}
              id={content.id}
              key={content.name}
-             style={{zIndex: zIndex + 1}}>
+             style={{
+                zIndex: zIndex + 1,
+                background: content.background,
+             }}>
                {this.setupTitlebar(content)}
                <div className="window-contents" onClick={this.handleDragStart}>
                   <div className="content-cover"></div>

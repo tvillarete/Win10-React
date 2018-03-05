@@ -51,6 +51,8 @@ class Windows10 extends Component {
                name: 'SpotiFree',
                id: 'spotifree-app',
                isInTaskbar: true,
+               theme: 'dark',
+               background: 'rgb(30, 30, 30)',
                img: 'spotifree.svg',
                viewStack: [],
                html: <SpotiFreeApp/>

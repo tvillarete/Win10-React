@@ -29,6 +29,8 @@ class MacOS extends Component {
                name: 'SpotiFree',
                id: 'spotifree-app',
                isInTaskbar: true,
+               theme: 'dark',
+               background: 'rgb(30, 30, 30)',
                img: 'spotifree.svg',
                viewStack: [],
                html: <SpotiFreeApp onEvent={this.handleEvent}/>

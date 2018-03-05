@@ -9,7 +9,7 @@ class ShortcutManager extends Component {
          shortcuts: {
             'OSSwap': {
                text: 'Change OS',
-               img: 'files/images/icons/settings.svg',
+               img: 'files/images/icons/clover.png',
                action: {
                   type: 'desktop',
                   setting: 'change-os',

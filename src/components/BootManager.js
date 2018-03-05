@@ -77,13 +77,13 @@ class BootSelector extends Component {
       const listSize = this.props.names.length;
       let pos = cursor;
 
-      if (e.keyCode === 37 && pos > 0) {
+      if ((e.keyCode === 37 || e.keyCode === 38) && pos > 0) {
          pos--;
          this.setState(prevState => ({
             cursor: pos,
             selected: this.props.names[pos],
          }));
-      } else if (e.keyCode === 39 && pos < listSize-1) {
+      } else if ((e.keyCode === 39 || e.keyCode === 40) && pos < listSize-1) {
          pos++;
          this.setState(prevState => ({
             cursor: pos,
