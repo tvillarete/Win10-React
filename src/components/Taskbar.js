@@ -44,13 +44,15 @@ class Taskbar extends Component {
 
    render() {
       return (
-         <div id="taskbar" className={this.props.osType}>
-            <div className="taskbar-bg-container">
-               <div className="taskbar-bg"
-                style={{background: `url(${this.props.bg}) no-repeat center center fixed`}}>
+         <div className="taskbar-container">
+            <div id="taskbar" className={this.props.osType}>
+               <div className="taskbar-bg-container">
+                  <div className="taskbar-bg"
+                   style={{background: `url(${this.props.bg}) no-repeat center center fixed`}}>
+                  </div>
                </div>
+               {this.getTaskbarItems()}
             </div>
-            {this.getTaskbarItems()}
          </div>
       );
    }
@@ -75,7 +77,12 @@ class TaskbarItem extends Component {
              ${this.props.isFocused ? 'focused' : ''}
              ${isMinimized ? 'minimized' : isActive ? 'active' : ''}
              ${this.props.inverted ? 'inverted' : ''}`}>
+            <div className="taskbar-item-label">
+               <div className="taskbar-item-label-triangle"></div>
+               {this.props.app}
+            </div>
             <img src={`files/images/icons/${this.props.src}`} alt="Taskbar Icon"/>
+            <div className="taskbar-item-indicator"></div>
          </div>
       );
    }

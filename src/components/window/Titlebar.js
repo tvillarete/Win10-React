@@ -23,7 +23,6 @@ class Titlebar extends Component {
          return (
             <div className="back-button"
              onClick={()=>this.handleClick({type: 'back'})}>
-               <img alt="back button" src="files/images/icons/back-arrow.svg"/>
             </div>
          );
       }
@@ -63,6 +62,7 @@ class Titlebar extends Component {
 					</div>
             </div>
             <div className="titlebar-section">
+               {this.getBackButton()}
                <p className="title">{name}</p>
             </div>
             <div className="titlebar-section"></div>

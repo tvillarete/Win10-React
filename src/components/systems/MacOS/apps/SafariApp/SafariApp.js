@@ -4,7 +4,7 @@ class SafariApp extends Component {
    render() {
       return (
          <div className="main-screen">
-            <iframe title="SpotiFree" src="http://tannerv.ddns.net:12345/SpotiFree/"></iframe>
+            <h1>Safari</h1>
          </div>
       );
    }

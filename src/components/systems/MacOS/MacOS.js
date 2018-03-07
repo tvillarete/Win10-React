@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Desktop from '../../Desktop';
 import SpotiFreeApp from './apps/SpotiFreeApp/SpotiFreeApp';
-import SettingsApp from './apps/SettingsApp/SettingsApp';
+import SysPrefsApp from './apps/SysPrefsApp/SysPrefsApp';
 import SafariApp from './apps/SafariApp/SafariApp';
 
 class MacOS extends Component {
@@ -17,14 +17,13 @@ class MacOS extends Component {
    componentWillMount() {
       this.setState({
          apps: {
-           Settings: {
-               name: 'Settings',
-               id: 'settings-app',
+           'System Preferences': {
+               name: 'System Preferences',
+               id: 'sys-prefs-app',
                isInTaskbar: true,
-               img: 'settings.svg',
-               invertIconColor: true,
+               img: 'system_preferences.png',
                viewStack: [],
-               html: <SettingsApp onEvent={this.handleEvent}/>
+               html: <SysPrefsApp onEvent={this.handleEvent}/>
             }, SpotiFree: {
                name: 'SpotiFree',
                id: 'spotifree-app',
@@ -34,7 +33,7 @@ class MacOS extends Component {
                img: 'spotifree.svg',
                viewStack: [],
                html: <SpotiFreeApp onEvent={this.handleEvent}/>
-            }, Edge: {
+            }, Safari: {
                name: 'Safari',
                id: 'safari-app',
                isInTaskbar: true,

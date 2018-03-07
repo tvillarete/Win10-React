@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PersonalizationView extends Component {
+class DesktopScreensaverView extends Component {
    constructor(props) {
       super(props);
       this.handleSettingsChange = this.handleSettingsChange.bind(this);
@@ -11,9 +11,26 @@ class PersonalizationView extends Component {
    }
 
    render() {
+      console.log(this.props);
       return (
-         <div className="view">
-            <h1>Personalization</h1>
+         <div className="view desktop-settings-view">
+            <div className="tab-content-container">
+               <div className="preview-container">
+                  <img alt="Background Preview" src={this.props.desktopBg}/>
+						<div className="preview-info-container">
+							<p>{`${window.innerWidth} x ${window.innerHeight}`}</p>
+							<select>
+								<option value="volvo">Fill Screen</option>
+								<option value="saab">Fit to Screen</option>
+								<option value="opel">Stretch to Fill Screen</option>
+								<option value="audi">Center</option>
+							</select>
+						</div>
+               </div>
+            </div>
+				<div className="wallpaper-select-container">
+
+				</div>
             <button onClick={() => {this.handleSettingsChange({
                type: 'desktop',
                setting: 'background',
@@ -34,5 +51,5 @@ class PersonalizationView extends Component {
    }
 }
 
-export default PersonalizationView;
+export default DesktopScreensaverView;
 

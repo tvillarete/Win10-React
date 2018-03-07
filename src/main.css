@@ -12,15 +12,22 @@ html {
   .text-input:focus {
     outline: 2px solid dodgerblue; }
 
-#taskbar {
+.taskbar-container {
   z-index: 11;
   position: fixed;
   display: flex;
   bottom: 0;
   left: 0;
   right: 0; }
+  .taskbar-container .taskbar-item-label {
+    display: none; }
+
+#taskbar {
+  position: relative;
+  display: flex; }
 
 #taskbar.windows-10 {
+  width: 100%;
   height: 3em;
   background: black; }
   #taskbar.windows-10 .taskbar-item {
@@ -60,7 +67,6 @@ html {
   justify-content: center;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  background: rgba(155, 155, 155, 0.72);
   box-shadow: 0 0 10px black;
   animation: dock-reveal 0.35s; }
   #taskbar.mac-os .taskbar-bg-container {
@@ -68,7 +74,9 @@ html {
     position: absolute;
     height: 100%;
     width: 100%;
-    overflow: hidden; }
+    overflow: hidden;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px; }
   #taskbar.mac-os .taskbar-bg {
     position: absolute;
     height: 100%;
@@ -80,19 +88,51 @@ html {
     display: flex;
     justify-content: center;
     height: 100%;
-    width: 5em;
-    transition: all 0.15s ease-in-out; }
+    width: 4.5em;
+    margin: 0; }
+    #taskbar.mac-os .taskbar-item .taskbar-item-indicator {
+      opacity: 0;
+      position: absolute;
+      bottom: 3px;
+      height: 5px;
+      width: 5px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      transition: all 1s ease-in-out; }
     #taskbar.mac-os .taskbar-item.active {
-      border-bottom: 2px solid white;
-      box-sizing: border-box;
-      animation: bounce 1s ease; }
+      transition: none; }
+      #taskbar.mac-os .taskbar-item.active .taskbar-item-indicator {
+        opacity: 1;
+        transition: none; }
     #taskbar.mac-os .taskbar-item.minimized {
       border-bottom: 2px solid white;
       box-sizing: border-box; }
     #taskbar.mac-os .taskbar-item.inverted img {
       filter: invert(1); }
+    #taskbar.mac-os .taskbar-item:hover .taskbar-item-label {
+      display: block; }
+    #taskbar.mac-os .taskbar-item .taskbar-item-label {
+      display: none;
+      position: absolute;
+      top: -2.3em;
+      padding: 0.2em 0.5em;
+      font-size: 0.95em;
+      background: #282828;
+      color: rgba(240, 240, 240, 0.8);
+      border-radius: 4px; }
+    #taskbar.mac-os .taskbar-item .taskbar-item-label-triangle {
+      position: absolute;
+      top: 1.3em;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #282828; }
     #taskbar.mac-os .taskbar-item img {
-      max-height: 75%;
+      max-height: 65%;
       max-width: auto;
       margin: auto 0; }
 @keyframes dock-reveal {
@@ -135,7 +175,9 @@ html {
   max-height: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  overflow: hidden; }
+  overflow: hidden;
+  cursor: default;
+  background: #f0f0f0; }
   .app-window.focused {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22); }
     .app-window.focused .content-cover {
@@ -168,11 +210,7 @@ html {
     width: 100%;
     border: none; }
   .app-window .window-contents {
-    position: absolute;
-    top: 3em;
-    bottom: 0;
-    left: 0;
-    right: 0; }
+    position: relative; }
 
 .app-window.windows-10 {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -204,8 +242,6 @@ html {
   transition: all 0.25s ease-in-out; }
   .app-window.mac-os.dark {
     border: none; }
-  .app-window.mac-os .window-contents {
-    top: 2.5em; }
   .app-window.mac-os .content-cover {
     top: 0.5em; }
   .app-window.mac-os.maximized {
@@ -249,7 +285,8 @@ html {
     display: flex;
     flex: 1; }
   .titlebar .title {
-    margin: auto 0; }
+    margin: auto 0;
+    font-size: 0.8em; }
 
 .titlebar.windows-10 {
   height: 2em; }
@@ -297,6 +334,16 @@ html {
     width: 100%;
     line-height: 0;
     text-align: center; }
+  .titlebar.mac-os .back-button {
+    display: flex;
+    background: dodgerblue; }
+    .titlebar.mac-os .back-button:hover {
+      filter: brightness(110%); }
+    .titlebar.mac-os .back-button img {
+      max-height: 1em;
+      width: 3em;
+      margin: auto;
+      filter: invert(1); }
   .titlebar.mac-os .nav-buttons {
     display: flex;
     flex: 0;
@@ -312,7 +359,7 @@ html {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0.2em;
+      margin: 0.3em;
       font-size: 9pt;
       width: 11px;
       height: 11px;
@@ -556,5 +603,134 @@ html {
     display: block; }
   #spotifree-app .main-screen {
     height: 100%; }
+
+#sys-prefs-app {
+  width: 42em;
+  height: 31em;
+  background: #edeaee;
+  user-select: none; }
+  #sys-prefs-app .back-button {
+    height: 100%;
+    width: 5.5em;
+    background: url(~/files/images/icons/sys_prefs_app/menu_button.png) no-repeat 0px 7px;
+    border-radius: 8px; }
+    #sys-prefs-app .back-button:hover {
+      filter: none; }
+    #sys-prefs-app .back-button:active {
+      filter: brightness(80%); }
+  #sys-prefs-app .view {
+    animation: fadein 0.35s; }
+@keyframes fadein {
+  0% {
+    opacity: 0; } }
+  #sys-prefs-app .main-screen {
+    display: flex;
+    flex-direction: column; }
+    #sys-prefs-app .main-screen .row {
+      height: 7em;
+      flex: 1;
+      display: flex; }
+      #sys-prefs-app .main-screen .row:nth-child(2n) {
+        background: #e4e4e4; }
+    #sys-prefs-app .main-screen .main-nav-button {
+      height: 7em;
+      width: 7.4em;
+      margin: 0.5em 1px;
+      padding-top: 0.5em;
+      font-size: 0.68em; }
+      #sys-prefs-app .main-screen .main-nav-button:active {
+        filter: brightness(80%); }
+      #sys-prefs-app .main-screen .main-nav-button h3 {
+        font-weight: 400;
+        margin: 0;
+        text-align: center; }
+  #sys-prefs-app .button-icon {
+    height: 50px;
+    width: 43px;
+    margin: 0 auto;
+    border-radius: 8px; }
+    #sys-prefs-app .button-icon.general-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -6px 0; }
+    #sys-prefs-app .button-icon.desktop-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -87px 0; }
+    #sys-prefs-app .button-icon.dock-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -170px 0; }
+    #sys-prefs-app .button-icon.mission-control-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -250px 0; }
+    #sys-prefs-app .button-icon.language-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -333px 0; }
+    #sys-prefs-app .button-icon.security-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -415px 0; }
+    #sys-prefs-app .button-icon.spotlight-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -498px 0; }
+    #sys-prefs-app .button-icon.notifications-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -580px 0; }
+    #sys-prefs-app .button-icon.displays-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -6px -115px; }
+    #sys-prefs-app .button-icon.energy-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -87px -115px; }
+    #sys-prefs-app .button-icon.keyboard-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -170px -115px; }
+    #sys-prefs-app .button-icon.mouse-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -250px -115px; }
+    #sys-prefs-app .button-icon.trackpad-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -333px -115px; }
+    #sys-prefs-app .button-icon.printer-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -415px -115px; }
+    #sys-prefs-app .button-icon.sound-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -498px -115px; }
+    #sys-prefs-app .button-icon.startup-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -580px -115px; }
+    #sys-prefs-app .button-icon.icloud-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -6px -225px; }
+    #sys-prefs-app .button-icon.internet-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -87px -225px; }
+    #sys-prefs-app .button-icon.app-store-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -170px -225px; }
+    #sys-prefs-app .button-icon.network-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -250px -225px; }
+    #sys-prefs-app .button-icon.bluetooth-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -333px -225px; }
+    #sys-prefs-app .button-icon.extensions-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -415px -225px; }
+    #sys-prefs-app .button-icon.sharing-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -498px -225px; }
+    #sys-prefs-app .button-icon.user-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -6px -335px; }
+    #sys-prefs-app .button-icon.parental-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -87px -340px; }
+    #sys-prefs-app .button-icon.siri-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -170px -340px; }
+    #sys-prefs-app .button-icon.date-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -250px -340px; }
+    #sys-prefs-app .button-icon.time-machine-settings {
+      background: url(~/files/images/icons/sys_prefs_sheet.jpg) -333px -340px; }
+  #sys-prefs-app .desktop-settings-view {
+    position: relative;
+    background: gainsboro;
+    border-radius: 4px;
+    margin: 2em 1em;
+    padding: 1.5em 1em 1em 1em; }
+    #sys-prefs-app .desktop-settings-view .tab-content-container img {
+      max-height: 4.5em;
+      padding: 0.5em;
+      border: 2px solid white;
+      border-radius: 4px;
+      box-shadow: inset 0 0 5px #969696; }
+    #sys-prefs-app .desktop-settings-view .preview-container {
+      display: flex; }
+    #sys-prefs-app .desktop-settings-view .preview-info-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 1em; }
+      #sys-prefs-app .desktop-settings-view .preview-info-container p {
+        margin: auto 0;
+        font-size: 0.9em; }
+    #sys-prefs-app .desktop-settings-view .wallpaper-select-container {
+      height: 15em;
+      background: white;
+      margin-top: 0.7em;
+      border: 1px solid #b4b4b4; }
 
 /*# sourceMappingURL=main.css.map */
