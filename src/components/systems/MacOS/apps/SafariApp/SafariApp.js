@@ -4,7 +4,7 @@ class SafariApp extends Component {
    render() {
       return (
          <div className="main-screen">
-            <h1>Safari</h1>
+            <iframe src="https://developer.mozilla.org"></iframe>
          </div>
       );
    }

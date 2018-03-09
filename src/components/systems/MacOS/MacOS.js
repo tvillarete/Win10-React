@@ -3,11 +3,17 @@ import Desktop from '../../Desktop';
 import SpotiFreeApp from './apps/SpotiFreeApp/SpotiFreeApp';
 import SysPrefsApp from './apps/SysPrefsApp/SysPrefsApp';
 import SafariApp from './apps/SafariApp/SafariApp';
+import LaunchpadApp from './apps/LaunchpadApp/LaunchpadApp';
 
 class MacOS extends Component {
    constructor(props) {
       super(props);
       this.handleEvent = this.handleEvent.bind(this);
+      this.state = {
+         backgrounds: [
+            'High Sierra', 'Sierra', 'El Capitan', 'Yosemite 5', 'Wave',
+            'Rolling Waves', 'Galaxy']
+      }
    }
 
    handleEvent(options) {
@@ -15,15 +21,16 @@ class MacOS extends Component {
    }
 
    componentWillMount() {
-      this.setState({
-         apps: {
+      this.setState(state => {
+         state.apps =  {
            'System Preferences': {
                name: 'System Preferences',
                id: 'sys-prefs-app',
                isInTaskbar: true,
                img: 'system_preferences.png',
+               backgrounds: state.backgrounds,
                viewStack: [],
-               html: <SysPrefsApp onEvent={this.handleEvent}/>
+               html: <SysPrefsApp/>
             }, SpotiFree: {
                name: 'SpotiFree',
                id: 'spotifree-app',
@@ -32,16 +39,29 @@ class MacOS extends Component {
                background: 'rgb(30, 30, 30)',
                img: 'spotifree.svg',
                viewStack: [],
-               html: <SpotiFreeApp onEvent={this.handleEvent}/>
+               html: <SpotiFreeApp />
             }, Safari: {
                name: 'Safari',
                id: 'safari-app',
                isInTaskbar: true,
                img: 'safari.png',
                viewStack: [],
-               html: <SafariApp onEvent={this.handleEvent}/>
+               html: <SafariApp/>
+            }, Launchpad: {
+               name: 'Launchpad',
+               id: 'launchpad-app',
+               altClassName: 'launchpad-app',
+               noWindowStyle: true,
+               isInTaskbar: true,
+               hideActiveApp: true,
+               noWindowIndex: true,
+               noMinimize: true,
+               img: 'launchpad.png',
+               viewStack: [],
+               html: <LaunchpadApp />
             },
-         },
+         };
+         return state;
       });
    }
 
@@ -50,6 +70,7 @@ class MacOS extends Component {
          <Desktop
           system="Mac OS High Sierra"
           osType="mac-os"
+          showStatusbar
           defaultBackground="files/images/macos.jpg"
           onEvent={this.handleEvent}
           apps={this.state.apps}/>

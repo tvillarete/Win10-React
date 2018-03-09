@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Statusbar from './Statusbar';
 import Taskbar from './Taskbar';
 import WindowManager from './WindowManager';
 import ShortcutManager from './ShortcutManager';
@@ -13,12 +14,14 @@ class Desktop extends Component {
       this.closePendingApps = this.closePendingApps.bind(this);
       this.focusWindow = this.focusWindow.bind(this);
       this.blurWindow = this.blurWindow.bind(this);
+      this.closeWindow = this.closeWindow.bind(this);
       this.isFocused = this.isFocused.bind(this);
       this.handleWindowFocus = this.handleWindowFocus.bind(this);
       this.state = {
          apps: props.apps,
          desktop: {
             background: props.defaultBackground,
+            dock: 'bottom',
          },
          activeApps: [],
          appsToClose: [],
@@ -55,6 +58,9 @@ class Desktop extends Component {
             case 'close':
                state.apps[app].isClosing = true;
                state.appsToClose.push(app);
+               if (options.closeDuration) {
+                  state.closeDuration = options.closeDuration;
+               }
                break;
             case 'minimize':
                state.apps[app].isMinimized = true;
@@ -125,10 +131,18 @@ class Desktop extends Component {
                return state;
             });
             break;
+         case 'dock':
+            this.setState(state => {
+               localStorage.dockPosition = options.value;
+               state.desktop.dock = options.value;
+               return state;
+            });
+            break;
          case 'change-os':
             this.props.onEvent(options);
             break;
          default:
+            console.log("No desktop state set");
             break;
       }
    }
@@ -143,7 +157,9 @@ class Desktop extends Component {
             activeApps.splice(i, 1);
          }
       }
-      activeApps.unshift(app);
+      if (!this.state.apps[app].hideActiveApp) {
+         activeApps.unshift(app);
+      }
       return activeApps;
    }
 
@@ -154,7 +170,19 @@ class Desktop extends Component {
             activeApps.splice(i, 1);
          }
       }
-      activeApps.push(app);
+      if (!this.state.apps[app].hideActiveApp) {
+         activeApps.push(app);
+      }
+      return activeApps;
+   }
+
+   closeWindow(app) {
+      let activeApps = this.state.activeApps;
+      for (let i=activeApps.length-1; i>=0; i--) {
+         if (activeApps[i] === app) {
+            activeApps.splice(i, 1);
+         }
+      }
       return activeApps;
    }
 
@@ -169,12 +197,14 @@ class Desktop extends Component {
       let appsToClose = this.state.appsToClose;
       let state = this.state;
       let shouldUpdateState = false;
+      const self = this;
 
       appsToClose.forEach(function(app, index) {
          state.apps[app].isOpen = false;
          state.apps[app].isClosing = false;
          state.apps[app].isMaximized = false;
          state.apps[app].viewStack = [];
+         self.closeWindow(app);
          shouldUpdateState = true;
       });
       state.appsToClose = [];
@@ -188,11 +218,15 @@ class Desktop extends Component {
     * setTimeout is used to ensure that the closing animation plays.
     */
    componentDidUpdate() {
-      const duration = this.props.osType === 'windows-10' ? 150 : 0;
+      const duration = this.state.closeDuration ||
+       this.props.osType === 'windows-10' ? 150 : 0;
 
       if (this.state.appsToClose.length) {
          setTimeout(() => {
             this.closePendingApps();
+            this.setState(state => {
+               state.closeDuration = 0;
+            });
          }, duration);
       }
    }
@@ -220,7 +254,13 @@ class Desktop extends Component {
    render() {
       return (
          <div id="desktop" className={this.props.osType}
-          style={{background: `url(${this.state.desktop.background}) no-repeat center center fixed`}}>
+          style={{background: `url("${this.state.desktop.background}") no-repeat center center fixed`}}>
+            {this.props.showStatusbar ?
+               <Statusbar
+                osType={this.props.osType}
+                activeApps={this.state.activeApps}
+                desktopBg={this.state.desktop.background}
+                /> : ''}
             <WindowManager
              osType={this.props.osType}
              desktopBg={this.state.desktop.background}
@@ -229,13 +269,14 @@ class Desktop extends Component {
              appStates={this.state.apps}
              activeApps={this.state.activeApps}/>
             <ShortcutManager
-             id={this.props.osType}
+             osType={this.props.osType}
              onEvent={this.handleEvent}/>
             <Taskbar
              osType={this.props.osType}
              apps={this.state.apps}
              activeApps={this.state.activeApps}
              bg={this.state.desktop.background}
+             position={this.state.desktop.dock}
              callbackParent={this.setApplicationState}/>
          </div>
       );

@@ -79,7 +79,8 @@ class Window extends Component {
          {
             content: content,
             onEvent: this.handleButtonClick,
-            desktopBg: this.props.desktopBg
+            desktopBg: this.props.desktopBg,
+            systemApps: this.props.systemApps
          },
       );
    }
@@ -92,7 +93,7 @@ class Window extends Component {
       var content = this.props.content;
       const zIndex = this.props.zIndex - 1;
       const defaultPosition = content.altClassName ? {x: 0, y: 0} :
-       {x: zIndex * 10, y: zIndex * 10};
+       this.props.osType === 'windows-10' ? {x: zIndex * 10, y: zIndex * 10} : {x: window.innerWidth/3, y: window.innerHeight/4};
 
       if (content.hasLoadingScreen && this.state.loadingScreenShown) {
          this.hideLoadingScreen();
@@ -118,7 +119,7 @@ class Window extends Component {
              id={content.id}
              key={content.name}
              style={{
-                zIndex: zIndex + 1,
+                zIndex: content.noWindowIndex ? null : zIndex + 1,
                 background: content.background,
              }}>
                {this.setupTitlebar(content)}

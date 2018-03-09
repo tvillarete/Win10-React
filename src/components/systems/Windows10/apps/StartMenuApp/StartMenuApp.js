@@ -113,7 +113,6 @@ class StartMenuTile extends Component {
    handleClick() {
       this.props.parentCallback({
          name: this.props.name,
-         action: 'open',
       });
    }
 

@@ -19,6 +19,17 @@ html {
   bottom: 0;
   left: 0;
   right: 0; }
+  .taskbar-container.left {
+    top: 0;
+    left: 0;
+    right: unset;
+    width: 3em;
+    height: unset;
+    flex-direction: column; }
+    .taskbar-container.left #taskbar {
+      flex-direction: column;
+      width: 3em;
+      height: 100%; }
   .taskbar-container .taskbar-item-label {
     display: none; }
 
@@ -57,39 +68,55 @@ html {
       max-width: auto;
       margin: auto 0; }
 
+.taskbar-container.left {
+  top: 2em; }
+  .taskbar-container.left #taskbar.mac-os {
+    height: auto;
+    width: 5em;
+    margin: auto 0;
+    flex-direction: column;
+    animation: dock-reveal-left 1.5s; }
+    .taskbar-container.left #taskbar.mac-os .taskbar-item {
+      height: 4.5em; }
+@keyframes dock-reveal-left {
+  0% {
+    transform: translateX(-100%); }
+  50% {
+    transform: translateX(-100%); } }
 #taskbar.mac-os {
   height: 5em;
-  left: 2em;
-  right: 2em;
   max-width: 70em;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
-  box-shadow: 0 0 10px black;
-  animation: dock-reveal 0.35s; }
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  animation: dock-reveal 1.5s; }
   #taskbar.mac-os .taskbar-bg-container {
     z-index: -1;
     position: absolute;
     height: 100%;
     width: 100%;
     overflow: hidden;
+    transition: all 0.15s ease-in-out;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px; }
-  #taskbar.mac-os .taskbar-bg {
+  #taskbar.mac-os .taskbar-bg, #taskbar.mac-os .taskbar-item-label-bg {
     position: absolute;
     height: 100%;
     width: 100%;
     overflow: hidden;
     filter: blur(10px);
-    transform: scale(1.4); }
+    transform: scale(1.4);
+    transition: background 0.5s; }
   #taskbar.mac-os .taskbar-item {
     display: flex;
     justify-content: center;
     height: 100%;
     width: 4.5em;
-    margin: 0; }
+    margin: 0;
+    transform: translate3d(0, 0, 0); }
     #taskbar.mac-os .taskbar-item .taskbar-item-indicator {
       opacity: 0;
       position: absolute;
@@ -98,9 +125,10 @@ html {
       width: 5px;
       background: rgba(255, 255, 255, 0.8);
       border-radius: 50%;
-      transition: all 1s ease-in-out; }
+      transition: all 0.7s ease-in-out; }
     #taskbar.mac-os .taskbar-item.active {
-      transition: none; }
+      transition: none;
+      animation: bounce 1s ease-in-out; }
       #taskbar.mac-os .taskbar-item.active .taskbar-item-indicator {
         opacity: 1;
         transition: none; }
@@ -112,13 +140,13 @@ html {
     #taskbar.mac-os .taskbar-item:hover .taskbar-item-label {
       display: block; }
     #taskbar.mac-os .taskbar-item .taskbar-item-label {
-      display: none;
       position: absolute;
       top: -2.3em;
       padding: 0.2em 0.5em;
       font-size: 0.95em;
+      white-space: nowrap;
       background: #282828;
-      color: rgba(240, 240, 240, 0.8);
+      color: rgba(240, 240, 240, 0.9);
       border-radius: 4px; }
     #taskbar.mac-os .taskbar-item .taskbar-item-label-triangle {
       position: absolute;
@@ -137,36 +165,111 @@ html {
       margin: auto 0; }
 @keyframes dock-reveal {
   0% {
+    transform: translateY(100%); }
+  50% {
     transform: translateY(100%); } }
 @keyframes bounce {
-  40% {
-    transform: translateY(-40%); }
+  0% {
+    transform: translateY(0); }
   50% {
-    transform: translateY(-50%); }
-  60% {
-    transform: translateY(-40%); }
+    transform: translateY(-30%); }
   100% {
-    transform: translateY(0); } }
+    transform: translateY(0%); } }
+.statusbar {
+  z-index: 11;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.7em;
+  background: white;
+  display: flex;
+  cursor: default;
+  user-select: none; }
+  .statusbar.active .statusbar-item:hover {
+    background: #006bd2; }
+    .statusbar.active .statusbar-item:hover .statusbar-dropdown {
+      display: block; }
+  .statusbar .statusbar-bg {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; }
+  .statusbar .statusbar-item {
+    display: flex;
+    align-items: center; }
+    .statusbar .statusbar-item .statusbar-text {
+      font-size: 0.9em;
+      margin: auto 0.3em;
+      padding: 0 5px; }
+      .statusbar .statusbar-item .statusbar-text.bold {
+        font-weight: bold; }
+  .statusbar .statusbar-dropdown {
+    display: none;
+    position: absolute;
+    top: 1.7em;
+    width: 15em; }
+
+.statusbar.mac-os {
+  padding-left: 0.6em;
+  color: white;
+  background: black; }
+  .statusbar.mac-os .statusbar-bg {
+    filter: blur(20px) brightness(0.8);
+    transform: scale(1.3);
+    opacity: 0.9; }
+  .statusbar.mac-os .statusbar-dropdown {
+    border-top: 1px solid #969696;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); }
+    .statusbar.mac-os .statusbar-dropdown .section {
+      padding: 5px 0;
+      border-top: 1px solid #8c8c8c;
+      border-bottom: 1px solid #8c8c8c; }
+      .statusbar.mac-os .statusbar-dropdown .section:first-child {
+        border-top: none; }
+      .statusbar.mac-os .statusbar-dropdown .section:last-child {
+        border-bottom: none; }
+    .statusbar.mac-os .statusbar-dropdown .statusbar-dropdown-item {
+      margin: 0;
+      padding: 4px 20px; }
+      .statusbar.mac-os .statusbar-dropdown .statusbar-dropdown-item:hover {
+        background: #006bd2;
+        color: white; }
+  .statusbar.mac-os .statusbar-dropdown-bg {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    filter: blur(6px);
+    transform: scale(1.3); }
+
 #desktop {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  transition: background 1s ease-in-out; }
+  transition: background 1s ease-in-out;
+  background-size: cover;
+  animation: fade 1.5s; }
 
 #desktop.windows-10 {
-  cursor: url(~/files/images/icons/windows_10_cursor.png), auto;
-  animation: fade 1.5s; }
-@keyframes fade {
-  0% {
-    opacity: 0; } }
+  cursor: url(~/files/images/icons/windows_10_cursor.png), auto; }
+
 #desktop.mac-os {
   transition: none;
-  animation: fadescale 1s; }
-@keyframes fadescale {
+  animation: fade 1s; }
+
+@keyframes fade {
   0% {
-    transform: scale(0.8);
     opacity: 0; } }
 .app-window {
   position: absolute;
@@ -210,7 +313,8 @@ html {
     width: 100%;
     border: none; }
   .app-window .window-contents {
-    position: relative; }
+    position: relative;
+    flex: 1; }
 
 .app-window.windows-10 {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -242,12 +346,15 @@ html {
   transition: all 0.25s ease-in-out; }
   .app-window.mac-os.dark {
     border: none; }
+  .app-window.mac-os.maximized {
+    top: 1.7em; }
   .app-window.mac-os .content-cover {
     top: 0.5em; }
   .app-window.mac-os.maximized {
     bottom: 5em; }
 
 .shortcut-container {
+  z-index: -2;
   position: absolute;
   top: 0;
   bottom: 3em;
@@ -267,8 +374,15 @@ html {
       max-width: auto;
       margin: auto; }
     .shortcut-container .shortcut .shortcut-text {
-      margin: auto 0;
-      text-shadow: 1px 1px 4px black; }
+      margin: auto 0; }
+
+.shortcut-container.mac-os {
+  top: 2em; }
+  .shortcut-container.mac-os .shortcut:hover {
+    background: transparent; }
+  .shortcut-container.mac-os .shortcut-text {
+    font-size: 0.8em;
+    text-shadow: 0 2px 7px black; }
 
 .titlebar {
   display: flex;
@@ -411,6 +525,7 @@ html {
   left: 0;
   right: 0;
   background: url(~/files/images/boot.png) no-repeat center center fixed;
+  background-size: cover;
   animation: fadein 0.5s; }
   .boot-manager h1 {
     display: none;
@@ -728,9 +843,76 @@ html {
         margin: auto 0;
         font-size: 0.9em; }
     #sys-prefs-app .desktop-settings-view .wallpaper-select-container {
+      display: flex;
+      flex-wrap: wrap;
       height: 15em;
       background: white;
       margin-top: 0.7em;
       border: 1px solid #b4b4b4; }
+      #sys-prefs-app .desktop-settings-view .wallpaper-select-container .background-icon {
+        height: 4em;
+        width: 7em;
+        margin: 0.5em 0.7em;
+        background-size: cover !important; }
+
+#launchpad-app {
+  z-index: 12;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translate3d(0, 0, 0);
+  animation: fade 0.35s; }
+  #launchpad-app.app-closing {
+    animation: fadeOut 0.35s; }
+    #launchpad-app.app-closing .launchpad-item-container {
+      animation: scale 0.35s; }
+  #launchpad-app .launchpad-contents {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex; }
+  #launchpad-app .launchpad-background {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    filter: blur(20px);
+    transform: scale(1.3); }
+  #launchpad-app .launchpad-item-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 0 auto;
+    padding: 4em 6em;
+    max-width: 50em;
+    animation: scaleBig 0.35s; }
+  #launchpad-app .launchpad-item {
+    display: flex;
+    height: 8em;
+    width: 8em;
+    flex-direction: column;
+    align-items: center;
+    color: white; }
+    #launchpad-app .launchpad-item p {
+      font-size: 0.8em;
+      text-shadow: 0 1px 6px black; }
+    #launchpad-app .launchpad-item img {
+      max-width: 75%;
+      max-height: 5em; }
+@keyframes fadeOut {
+  100% {
+    opacity: 0; } }
+@keyframes scaleBig {
+  0% {
+    transform: scale(1.1); } }
+@keyframes scale {
+  100% {
+    transform: scale(1.1); } }
 
 /*# sourceMappingURL=main.css.map */

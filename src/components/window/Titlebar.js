@@ -60,9 +60,9 @@ class Titlebar extends Component {
 							<a className="zoombutton"><span><strong>+</strong></span></a>
 						</div>
 					</div>
+               {this.getBackButton()}
             </div>
             <div className="titlebar-section">
-               {this.getBackButton()}
                <p className="title">{name}</p>
             </div>
             <div className="titlebar-section"></div>

@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import DesktopScreensaverView from './DesktopScreensaverView';
+import DockView from './DockView';
 
 class SysPrefsApp extends Component {
    constructor(props) {
       super(props);
+      this.getMainNavButtons = this.getMainNavButtons.bind(this);
+      this.handleEvent = this.handleEvent.bind(this);
+      this.getCurrentView = this.getCurrentView.bind(this);
       this.state = {
          navSections: {
             General: {
@@ -12,9 +16,15 @@ class SysPrefsApp extends Component {
             }, 'Desktop & Screen Saver': {
                id: 'desktop-settings',
                row: 1,
+               html: <DesktopScreensaverView
+                      backgrounds={this.props.content.backgrounds}
+                      desktopBg={this.props.desktopBg}
+                      onEvent={this.handleEvent}/>
             }, Dock: {
                id: 'dock-settings',
                row: 1,
+               html: <DockView
+                      onSettingsChange={this.handleEvent}/>
             }, 'Mission Control': {
                id: 'mission-control-settings',
                row: 1,
@@ -95,9 +105,6 @@ class SysPrefsApp extends Component {
             }
          }
       }
-      this.getMainNavButtons = this.getMainNavButtons.bind(this);
-      this.handleEvent = this.handleEvent.bind(this);
-      this.getCurrentView = this.getCurrentView.bind(this);
    }
 
    handleEvent(options) {
@@ -114,14 +121,13 @@ class SysPrefsApp extends Component {
       for (let section in navSections) {
          let sectionContent = navSections[section];
          if (sectionContent.row) {
-
-         rows[sectionContent.row-1].push(
-            <MainNavButton
-             key={section}
-             name={section}
-             content={sectionContent}
-             onEvent={this.handleEvent}/>
-         )
+            rows[sectionContent.row-1].push(
+               <MainNavButton
+                key={section}
+                name={section}
+                content={sectionContent}
+                onEvent={this.handleEvent}/>
+            )
          }
       }
       for (var i = 0; i<rows.length; i++) {
@@ -140,20 +146,25 @@ class SysPrefsApp extends Component {
       if (!viewStack.length) {
          return <MainScreenView navButtons={this.getMainNavButtons()}/>
       } else {
-         switch(viewStack[0]) {
-            case 'desktop-settings':
-               return <DesktopScreensaverView
-                       desktopBg={this.props.desktopBg}
-                       onSettingsChange={this.handleEvent}/>
-            default:
-               return false;
-         }
+         return this.state.navSections[viewStack[0]].html;
       }
    }
 
    render() {
       return (
          this.getCurrentView()
+      );
+   }
+}
+
+class MainScreenView extends Component {
+   render() {
+      return (
+         <div className="view main-screen">
+            <div className="button-container">
+               {this.props.navButtons}
+            </div>
+         </div>
       );
    }
 }
@@ -171,7 +182,7 @@ class MainNavButton extends Component {
       this.props.onEvent({
          name: 'System Preferences',
          action: 'change-view',
-         view: this.props.content.id,
+         view: this.props.name,
       });
    }
 
@@ -185,18 +196,6 @@ class MainNavButton extends Component {
             <div className={`button-icon ${this.props.content.id}`}></div>
             <h3 className="main-nav-button-title">{this.props.name}</h3>
             <h4 className="main-nav-button-details">{this.props.content.details}</h4>
-         </div>
-      );
-   }
-}
-
-class MainScreenView extends Component {
-   render() {
-      return (
-         <div className="view main-screen">
-            <div className="button-container">
-               {this.props.navButtons}
-            </div>
          </div>
       );
    }

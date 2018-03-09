@@ -8,8 +8,8 @@ class Taskbar extends Component {
       this.isFocused = this.isFocused.bind(this);
    }
 
-   handleItemClick(app) {
-      this.props.callbackParent({name: app});
+   handleItemClick(options) {
+      this.props.callbackParent(options);
    }
 
    isFocused(app) {
@@ -44,11 +44,11 @@ class Taskbar extends Component {
 
    render() {
       return (
-         <div className="taskbar-container">
+         <div className={`taskbar-container ${this.props.position}`}>
             <div id="taskbar" className={this.props.osType}>
                <div className="taskbar-bg-container">
                   <div className="taskbar-bg"
-                   style={{background: `url(${this.props.bg}) no-repeat center center fixed`}}>
+                   style={{background: `url("${this.props.bg}") no-repeat center center fixed`}}>
                   </div>
                </div>
                {this.getTaskbarItems()}
@@ -65,7 +65,16 @@ class TaskbarItem extends Component {
    }
 
    handleItemClick() {
-      this.props.callbackParent(this.props.app);
+      this.props.callbackParent({
+         name: this.props.app,
+      });
+      if (this.props.app !== 'Launchpad') {
+         this.props.callbackParent({
+            action: 'close',
+            name: 'Launchpad',
+            closeDuration: 350,
+         });
+      }
    }
 
    render() {
@@ -78,6 +87,7 @@ class TaskbarItem extends Component {
              ${isMinimized ? 'minimized' : isActive ? 'active' : ''}
              ${this.props.inverted ? 'inverted' : ''}`}>
             <div className="taskbar-item-label">
+               <div className="taskbar-item-label-bg"></div>
                <div className="taskbar-item-label-triangle"></div>
                {this.props.app}
             </div>

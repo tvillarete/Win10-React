@@ -32,6 +32,7 @@ class WindowManager extends Component {
                 zIndex={this.getWindowIndex(app)}
                 isFocused={this.isFocused(app)}
                 desktopBg={this.props.desktopBg}
+                systemApps={this.props.appStates}
                 onWindowFocus={this.handleWindowFocus}
                 onButtonClick={this.handleButtonClick}/>
             );
