@@ -50,7 +50,7 @@ class StartMenuApp extends Component {
       return (
          <div className="sm-container">
             <div className="sm-background"
-             style={{background: `url(${this.props.desktopBg}) no-repeat center center fixed`}}>
+             style={{background: `url("${this.props.desktopBg}") no-repeat center center fixed`}}>
             </div>
             <div className="sm-sidebar">
                Sidebar

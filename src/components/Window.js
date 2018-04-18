@@ -93,7 +93,7 @@ class Window extends Component {
       var content = this.props.content;
       const zIndex = this.props.zIndex - 1;
       const defaultPosition = content.altClassName ? {x: 0, y: 0} :
-       this.props.osType === 'windows-10' ? {x: zIndex * 10, y: zIndex * 10} : {x: window.innerWidth/3, y: window.innerHeight/4};
+       this.props.osType === 'windows-10' ? {x: zIndex * 10, y: zIndex * 10} : {x: window.innerWidth/3.5, y: window.innerHeight/4};
 
       if (content.hasLoadingScreen && this.state.loadingScreenShown) {
          this.hideLoadingScreen();

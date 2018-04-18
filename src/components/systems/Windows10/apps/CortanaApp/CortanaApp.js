@@ -13,6 +13,8 @@ class CortanaApp extends Component {
    render() {
       return (
          <div className="cortana-container">
+            <div className="cortana-bg-container"
+             style={{background: `url("${this.props.desktopBg}") no-repeat center center fixed`}}></div>
          </div>
       );
    }

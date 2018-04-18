@@ -76,8 +76,8 @@ class Shortcut extends Component {
    render() {
       return (
          <div className="shortcut"
-          onClick={()=>{this.props.requireDblClick ? '' : this.handleEvent(this.props.action)}}
-          onDoubleClick={()=>{this.props.requireDblClick ? this.handleEvent(this.props.action) : ''}}>
+          onClick={()=>{this.handleEvent(this.props.action)}}
+          >
             <img alt={this.props.text} src={this.props.img}/>
             <p className="shortcut-text">{this.props.text}</p>
          </div>

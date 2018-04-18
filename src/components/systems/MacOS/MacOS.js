@@ -12,7 +12,7 @@ class MacOS extends Component {
       this.state = {
          backgrounds: [
             'High Sierra', 'Sierra', 'El Capitan', 'Yosemite 5', 'Wave',
-            'Rolling Waves', 'Galaxy']
+            'Rolling Waves', 'Galaxy', 'Color Burst 2', 'Pink Lotus Flower']
       }
    }
 
